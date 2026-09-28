@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Camber — Mockup do MVP</title>
+<meta name="description" content="Mockup navegável do Camber, gestão simples da oficina para o mecânico autônomo: agenda, ordens de serviço, cadastros, estoque, caixa e o mês pronto para o Imposto de Renda. Dados fictícios.">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Camber">
+<meta property="og:title" content="Camber — Mockup do MVP">
+<meta property="og:description" content="A sua oficina no alinhamento perfeito. Demonstração navegável, com dados fictícios.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231F2937'/%3E%3Cg transform='translate(12 12) scale(.76)' stroke-linecap='round' fill='none'%3E%3Cpath d='M82.77 27.06 A40 40 0 1 0 82.77 72.94' stroke='%231D4ED8' stroke-width='9'/%3E%3Cpath d='M72.94 33.94 A28 28 0 1 0 72.94 66.06' stroke='%23F3F4F6' stroke-width='7'/%3E%3Cpath d='M63.11 40.82 A16 16 0 1 0 63.11 59.18' stroke='%23F3F4F6' stroke-width='5'/%3E%3Cpath d='M50 50 L96 50' stroke='%2384CC16' stroke-width='5'/%3E%3C/g%3E%3C/svg%3E">
+<script>(function(){var t='claro';try{t=localStorage.getItem('camber-tema')||t}catch(e){}document.documentElement.setAttribute('data-tema',t)})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,700,0..1,0&icon_names=add,arrow_back,arrow_forward,assignment,attach_money,build,calendar_month,call_made,call_received,chat,check,check_circle,chevron_right,close,contrast,dark_mode,directions_car,download,edit,event,event_busy,folder,help,home,inventory_2,light_mode,link,link_off,payments,qr_code_2,receipt_long,remove,schedule,search,send,settings,share,today,trending_down,trending_up,warning&display=swap">
+<style>
+/* =====================================================================
+   1. TOKENS — Manual da Marca Camber v1.0 + tema claro (padrão) e escuro
+   ===================================================================== */
+:root{
+  --cobalto:#1D4ED8;   /* primária: ações e destaques */
+  --eletrico:#84CC16;  /* só confirmação e status positivo */
+  --grafite:#1F2937;
+  --cinza:#F3F4F6;
+  --branco:#FFFFFF;    /* superfície do tema claro e texto sobre Cobalto */
+  --ok:var(--eletrico);
+  --atencao:#F59E0B;
+  --erro:#EF4444;
+  --fonte:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  /* tema claro */
+  color-scheme:light;
+  --fundo:#F3F4F6;
+  --sup:#FFFFFF;
+  --linha:#D1D5DB;
+  --texto:#1F2937;     /* 13,3:1 sobre o fundo */
+  --texto-2:#374151;   /* 9,4:1 sobre o fundo */
+  --traco:#9CA3AF;     /* só traço decorativo */
+  --moldura:#1F2937;
+  --foco:#1D4ED8;
+  --logo-int:#1F2937;  /* arcos internos do símbolo em fundo claro */
+  --papel:#FFFFFF;
+}
+:root[data-tema="escuro"]{
+  color-scheme:dark;
+  --fundo:#1F2937;--sup:#111827;--linha:#374151;--texto:#F3F4F6;--texto-2:#D1D5DB;
+  --moldura:#374151;--foco:#F3F4F6;--logo-int:#F3F4F6;--papel:#F3F4F6;
+}
+@media (prefers-color-scheme:dark){
+  :root[data-tema="sistema"]{
+    color-scheme:dark;
+    --fundo:#1F2937;--sup:#111827;--linha:#374151;--texto:#F3F4F6;--texto-2:#D1D5DB;
+    --moldura:#374151;--foco:#F3F4F6;--logo-int:#F3F4F6;--papel:#F3F4F6;
+  }
+}
+/* status: cada componente lê --st */
+.s0{--st:var(--ok)}
+.s1{--st:var(--atencao)}
+.s2{--st:var(--erro)}
+
+/* =====================================================================
+   2. BASE
+   ===================================================================== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--fundo);color:var(--texto);font:400 17px/1.5 var(--fonte);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3,p,ul,ol,dl,dd,figure,fieldset{margin:0}
+ul,ol{padding:0;list-style:none}
+fieldset{padding:0;border:0;min-width:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--foco);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.mono{font-family:var(--mono);font-weight:500}
+.titulo{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.sub{margin-top:4px;color:var(--texto-2);font-weight:500}
+.rotulo{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;line-height:1.3;color:var(--texto-2)}
+.secao{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 10px;font-size:20px;font-weight:700;letter-spacing:-.02em;scroll-margin-top:16px}
+.secao-t{display:flex;align-items:center;gap:8px}
+.secao a{display:inline-flex;align-items:center;min-height:48px;font-size:15px;font-weight:600;letter-spacing:0}
+.dica{margin-top:10px;font-size:15px;font-weight:500;color:var(--texto-2)}
+.ic{font-family:'Material Symbols Rounded';font-weight:700;font-style:normal;font-size:24px;line-height:1;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none;white-space:nowrap;letter-spacing:normal;text-transform:none;direction:ltr;user-select:none;font-variation-settings:'FILL' 0,'wght' 700,'GRAD' 0,'opsz' 24;font-feature-settings:'liga'}
+.logo-int{stroke:var(--logo-int)}
+
+/* =====================================================================
+   3. COMPONENTES
+   ===================================================================== */
+/* --- moldura: tela inteira no celular; aparelho + legenda no computador */
+.legenda{display:none}
+.app{position:relative;display:flex;flex-direction:column;height:100vh;height:100dvh;background:var(--fundo);overflow:hidden}
+@media (min-width:600px){
+  body{display:grid;place-items:center;padding:24px}
+  .palco{display:flex;align-items:center;gap:72px}
+  .aparelho{box-sizing:content-box;flex:none;width:390px;height:min(844px,calc(100vh - 68px));border:10px solid var(--moldura);border-radius:54px;overflow:hidden}
+  .app{height:100%}
+}
+@media (min-width:960px){.legenda{display:block;max-width:360px;color:var(--texto-2)}}
+.legenda .marca{display:flex;align-items:center;gap:14px}
+.marca-simbolo svg{display:block;width:56px;height:56px}
+.logotipo{font-size:52px;font-weight:900;letter-spacing:-.055em;line-height:1;color:var(--texto)}
+.slogan{margin-top:18px;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.25;color:var(--texto)}
+.legenda p{margin-top:12px}
+.legenda h2{margin-top:26px}
+.legenda ol{margin-top:10px;padding-left:22px;list-style:decimal;display:grid;gap:6px}
+.legenda b{color:var(--texto);font-weight:700}
+
+/* --- topo e navegação */
+.topo{display:flex;align-items:center;gap:10px;min-height:60px;padding:6px 6px 6px 16px;background:var(--sup);border-bottom:1px solid var(--linha)}
+.simbolo svg{display:block;width:32px;height:32px}
+.topo-nome{flex:1;min-width:0;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icone-btn{position:relative;display:grid;place-items:center;flex:none;width:48px;height:48px;border:0;border-radius:12px;background:transparent;color:var(--texto);text-decoration:none}
+.icone-btn[aria-current="page"]{background:var(--fundo)}
+#tela{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.tela{min-height:100%;display:flex;flex-direction:column}
+.pad{flex:1;padding:16px 16px 28px}
+.acoes{position:sticky;bottom:0;display:flex;gap:10px;padding:12px 16px;background:var(--sup);border-top:1px solid var(--linha)}
+.abas{display:grid;grid-template-columns:repeat(5,1fr);padding:6px 2px calc(6px + env(safe-area-inset-bottom));background:var(--sup);border-top:1px solid var(--linha)}
+.abas a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;border-radius:12px;text-decoration:none;font-size:13px;font-weight:600;color:var(--texto-2);-webkit-tap-highlight-color:transparent}
+.abas .pilula-nav{display:grid;place-items:center;width:52px;height:30px;border-radius:15px;transition:background-color .2s}
+.abas a[aria-current="page"]{color:var(--texto)}
+.abas a[aria-current="page"] .pilula-nav{background:var(--cobalto);color:var(--branco)}
+.abas a[aria-current="page"] .ic{font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24}
+.volta{display:inline-flex;align-items:center;gap:6px;min-height:48px;margin:-8px 0 4px -4px;padding:0 8px 0 4px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;color:var(--texto-2)}
+
+/* --- botões e chips */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border:0;border-radius:14px;background:var(--sup);color:var(--texto);font:700 18px/1.1 var(--fonte);letter-spacing:-.01em;text-decoration:none;text-align:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .1s}
+.btn:active:not([disabled]){transform:scale(.98)}
+.btn-prim{flex:1;background:var(--cobalto);color:var(--branco)}
+.btn-sec{border:1.5px solid var(--linha)}
+.btn[disabled]{background:var(--linha);color:var(--texto-2);cursor:not-allowed}
+.btn-mini{min-height:48px;padding:0 14px;border-radius:12px;font-size:16px}
+.btn-mini .ic{font-size:20px}
+.btn-quadrado{flex:none;width:52px;padding:0}
+.btn-bloco{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px 0 12px;border:1.5px solid var(--linha);border-radius:999px;background:var(--sup);color:var(--texto);font-size:16px;font-weight:600;-webkit-tap-highlight-color:transparent}
+.chip .ic{font-size:20px}
+.chip[aria-pressed="true"]{background:var(--cobalto);border-color:var(--cobalto);color:var(--branco)}
+.seg{display:grid;gap:4px;padding:4px;border:1px solid var(--linha);border-radius:14px;background:var(--sup)}
+.seg a,.seg button{display:grid;place-items:center;min-height:48px;padding:0 6px;border:0;border-radius:10px;background:transparent;font-size:15px;font-weight:600;text-decoration:none;color:var(--texto-2)}
+.seg [aria-current="page"],.seg [aria-pressed="true"]{background:var(--cobalto);color:var(--branco)}
+
+/* --- cartões, listas e status */
+.card{background:var(--sup);border:1px solid var(--linha);border-radius:16px;padding:14px}
+.lista{display:grid;gap:8px}
+.lista-card{background:var(--sup);border:1px solid var(--linha);border-radius:16px;overflow:hidden}
+.lista-card > li + li{border-top:1px solid var(--linha)}
+.item-lista{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 8px 10px 14px;text-decoration:none;color:inherit}
+.item-lista .corpo{flex:1;min-width:0}
+.item-lista > .ic:last-child{color:var(--texto-2)}
+.nome{font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.linha-sub{font-size:15px;font-weight:500;color:var(--texto-2)}
+.linha{display:grid;gap:4px;border-left:4px solid var(--st,var(--linha))}
+.linha-topo{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.linha-rodape{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-top:4px}
+.valor{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.estado{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600}
+.estado .ic{font-size:20px;color:var(--st,var(--texto-2))}
+.pilula{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:2px 10px;border:1px solid color-mix(in srgb,var(--st,var(--linha)) 60%,var(--sup));border-radius:999px;background:color-mix(in srgb,var(--st,var(--linha)) 18%,var(--sup));font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;color:var(--texto);text-decoration:none}
+.pilula .ic{font-size:16px}
+.pilulas{display:flex;flex-wrap:wrap;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--st,var(--traco))}
+.avatar{display:grid;place-items:center;flex:none;width:40px;height:40px;border:1px solid var(--linha);border-radius:50%;background:var(--fundo);font-size:15px;font-weight:700}
+.vazio{display:flex;align-items:center;gap:10px;font-weight:500;color:var(--texto-2)}
+.flash{animation:flash 1.4s ease-out}
+@keyframes flash{from{border-color:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 45%,transparent)}}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.kpi{display:block;text-decoration:none;color:inherit}
+.kpi-valor{margin-top:4px;font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi-sub{margin-top:2px;font-size:15px;font-weight:500;color:var(--texto-2)}
+
+/* --- placa (faixa azul do padrão Mercosul) */
+.placa{display:inline-block;flex:none;padding:8px 8px 3px;border:1.5px solid var(--grafite);border-radius:6px;background:linear-gradient(var(--cobalto) 0 5px,var(--cinza) 5px);color:var(--grafite);font:700 15px/1.1 var(--mono);letter-spacing:.06em;white-space:nowrap}
+.placa-campo{display:block;width:100%;height:88px;padding:16px 0 0;border:2px solid var(--grafite);border-radius:12px;background:linear-gradient(var(--cobalto) 0 16px,var(--cinza) 16px);color:var(--grafite);font:700 40px/1 var(--mono);letter-spacing:.08em;text-align:center;text-transform:uppercase}
+.placa-campo::placeholder{color:var(--traco);font-weight:500;opacity:1}
+.placa-campo:focus-visible{outline-offset:3px}
+
+/* --- formulários */
+.campo{display:grid;gap:6px;margin-top:14px}
+.campo > label{font-size:16px;font-weight:600}
+.opc{font-weight:500;color:var(--texto-2)}
+.entrada{width:100%;min-height:52px;padding:0 14px;border:1.5px solid var(--linha);border-radius:12px;background:var(--sup);color:var(--texto);font-size:17px;font-weight:500}
+textarea.entrada{padding:12px 14px;resize:vertical}
+.entrada::placeholder{color:var(--texto-2);opacity:.75}
+.entrada[readonly]{background:var(--fundo)}
+.entrada[aria-invalid="true"]{border-color:var(--erro)}
+.com-prefixo{display:flex;align-items:center;gap:8px;min-height:52px;padding-left:14px;border:1.5px solid var(--linha);border-radius:12px;background:var(--sup);font-weight:600;color:var(--texto-2)}
+.com-prefixo .entrada{border:0;padding-left:0;min-height:48px}
+.com-prefixo:focus-within{outline:3px solid var(--foco);outline-offset:2px}
+.com-prefixo .entrada:focus-visible{outline:none}
+.check{display:flex;align-items:center;gap:12px;min-height:52px;margin-top:14px;font-weight:600;cursor:pointer}
+.check input{width:24px;height:24px;margin:0;accent-color:var(--cobalto)}
+.erro-campo{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600}
+.erro-campo::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--erro)}
+.opcao{display:flex;align-items:center;gap:12px;min-height:64px;margin-top:8px;padding:10px 14px;border:1.5px solid var(--linha);border-radius:14px;background:var(--sup);cursor:pointer}
+.opcao:has(input:checked){border-color:var(--cobalto);box-shadow:inset 0 0 0 1px var(--cobalto)}
+.opcao input{width:22px;height:22px;margin:0;accent-color:var(--cobalto)}
+.opcao span:last-child{display:grid;line-height:1.3}
+.opcao small{font-size:15px;font-weight:500;color:var(--texto-2)}
+
+/* --- avisos */
+.aviso{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:10px;padding:10px 12px;border:1px solid var(--atencao);border-radius:12px;background:color-mix(in srgb,var(--atencao) 14%,var(--sup))}
+.aviso > span:not(.ic){flex:1;min-width:0;font-size:15px;font-weight:600}
+.toast{position:absolute;z-index:20;top:72px;left:16px;right:16px;display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:14px;background:var(--texto);color:var(--sup);font-weight:600;line-height:1.35;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.on{opacity:1;transform:none}
+.toast .ic{color:var(--ok)}
+
+/* =====================================================================
+   4. TELAS
+   ===================================================================== */
+/* --- Início: pendências */
+.contador{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:var(--texto);color:var(--sup);font-size:15px;font-weight:700}
+.pend{display:flex;align-items:center;gap:12px;padding:12px;border-left:4px solid var(--st)}
+.pend-ic{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--st) 22%,var(--sup))}
+.pend-txt{flex:1;min-width:0}
+.pend-t{font-weight:700;line-height:1.3}
+.pend-d{font-size:15px;font-weight:500;line-height:1.35;color:var(--texto-2)}
+.pend .btn{flex:none}
+.em-dia{display:flex;align-items:center;gap:12px;padding:16px;border-left:4px solid var(--ok)}
+.urgente{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:color-mix(in srgb,var(--erro) 20%,var(--sup));font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;vertical-align:2px}
+.hora{min-width:58px;font:700 17px var(--mono)}
+
+/* --- Nova OS */
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px}
+.passos li{font-size:14px;font-weight:600;color:var(--texto-2)}
+.passos li::before{content:'';display:block;height:6px;margin-bottom:6px;border-radius:3px;background:var(--linha)}
+.passos li.feito::before,.passos li[aria-current]::before{background:var(--cobalto)}
+.passos li[aria-current]{color:var(--texto)}
+.campo-rotulo{display:block;margin:16px 0 0}
+.achado{display:flex;align-items:flex-start;gap:12px;margin-top:16px}
+.achado-carro{font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
+.carro-linha{display:flex;align-items:center;gap:10px;margin-top:10px;font-weight:600}
+.sel-outro{margin-top:8px}
+.item{padding:12px}
+.item-topo{display:flex;align-items:center;gap:10px}
+.item-nome{flex:1;min-width:0;font-weight:700;line-height:1.25}
+.item-tipo{font-size:14px;font-weight:500;color:var(--texto-2)}
+.item-rodape{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.qtd{display:inline-flex;align-items:center;border:1.5px solid var(--linha);border-radius:12px;overflow:hidden}
+.qtd button{display:grid;place-items:center;width:48px;height:44px;border:0;background:var(--fundo)}
+.qtd button[disabled]{color:var(--traco);cursor:not-allowed}
+.qtd output{min-width:44px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.valor-campo{display:flex;align-items:center;gap:4px;height:48px;padding:0 10px;border:1.5px solid var(--linha);border-radius:10px;background:var(--fundo);font-weight:600;color:var(--texto-2)}
+.valor-campo:focus-within{border-color:var(--foco)}
+.valor-campo input{width:78px;padding:0;border:0;background:transparent;outline:none;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--texto)}
+.total-linha{display:flex;align-items:baseline;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:1px solid var(--linha)}
+.total-linha strong{font-size:28px;font-weight:900;letter-spacing:-.035em}
+.rev-itens{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid var(--linha)}
+.rev-itens li{display:flex;justify-content:space-between;gap:12px}
+.rev-itens li > span:last-child{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* --- OS: detalhe */
+.status-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+.status-linha + .status-linha{border-top:1px solid var(--linha)}
+.receber{display:grid;gap:8px;flex:1}
+.receber-topo{display:flex;align-items:center;justify-content:space-between}
+.formas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+
+/* --- Comprovante (sempre em papel claro) */
+.papel{--texto:#1F2937;--texto-2:#374151;--linha:#D1D5DB;--logo-int:#1F2937;--foco:#1D4ED8;margin-top:16px;padding:20px;border:1px solid #D1D5DB;border-radius:18px;background:var(--papel);color:var(--texto)}
+.papel-topo{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1.5px dashed var(--traco)}
+.logo-oficina{display:grid;place-items:center;flex:none;width:64px;height:64px;border-radius:16px;background:var(--grafite);color:var(--cinza);font-size:26px;font-weight:900;letter-spacing:-.04em}
+.papel-oficina{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.papel-dados{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;padding:16px 0;border-bottom:1.5px dashed var(--traco)}
+.papel-dados dt,.papel-itens th{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--texto-2)}
+.papel-dados dd{font-weight:600}
+.papel-itens{width:100%;margin-top:6px;border-collapse:collapse}
+.papel-itens th{padding:8px 0;text-align:left}
+.papel-itens td{padding:10px 0;border-bottom:1px solid var(--linha);vertical-align:top;font-weight:600}
+.papel-itens td span{display:block;font-size:14px;font-weight:500;color:var(--texto-2)}
+.papel-itens th:last-child,.papel-itens td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.papel-total{display:flex;align-items:baseline;justify-content:space-between;padding-top:14px}
+.papel-total strong{font-size:32px;font-weight:900;letter-spacing:-.035em}
+.selo{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:14px;border-top:1.5px dashed var(--traco);font-size:14px;font-weight:600;color:var(--texto-2)}
+.selo svg{flex:none;width:24px;height:24px}
+
+/* --- Caixa */
+.saldo-valor{margin-top:4px;font-size:40px;font-weight:900;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
+.barra{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:10px;margin-top:10px;font-size:15px;font-weight:600}
+.trilho{height:10px;border-radius:5px;background:var(--fundo);overflow:hidden}
+.trilho span{display:block;height:100%;border-radius:5px;background:var(--cobalto)}
+.barra.saida .trilho span{background:var(--traco)}
+.saude{display:flex;align-items:flex-start;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--linha);font-weight:500}
+.mov{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px}
+.mov-ic{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--fundo)}
+.mov-ic.s0{background:color-mix(in srgb,var(--ok) 25%,var(--sup))}
+.mov .corpo{flex:1;min-width:0}
+.leao{display:grid;gap:12px;margin-top:28px;border-left:4px solid var(--cobalto)}
+.leao h2{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;letter-spacing:-.02em;scroll-margin-top:16px}
+.leao-nums{display:grid;gap:8px}
+.leao-nums div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--linha)}
+.leao-nums dt{font-size:15px;font-weight:500;color:var(--texto-2)}
+.leao-nums dd{display:flex;align-items:center;gap:8px;font-weight:800;font-variant-numeric:tabular-nums}
+.escolha{display:grid;gap:8px;margin-top:6px}
+
+/* --- Agenda */
+.dias{grid-template-columns:repeat(6,1fr);margin-top:16px}
+.seg .dia{display:grid;gap:0;min-height:60px;line-height:1.2}
+.dia small{font-size:13px;font-weight:700;text-transform:uppercase}
+.dia b{font-size:20px;font-weight:800}
+
+/* --- Cadastros e fichas */
+.cad-abas{grid-template-columns:repeat(4,1fr);margin-top:16px}
+.busca{display:flex;align-items:center;gap:10px;min-height:52px;margin-top:12px;padding:0 14px;border:1.5px solid var(--linha);border-radius:14px;background:var(--sup)}
+.busca:focus-within{outline:3px solid var(--foco);outline-offset:2px}
+.busca input{flex:1;min-width:0;min-height:48px;border:0;background:transparent;outline:none;font-size:17px;font-weight:500}
+.busca input::placeholder{color:var(--texto-2);opacity:.8}
+.ficha-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-top:14px}
+.specs dt{font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--texto-2)}
+.specs dd{font-weight:600}
+.specs .larga{grid-column:1/-1}
+.tempo{position:relative;display:grid;gap:16px;margin-top:6px;padding-left:24px}
+.tempo::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--linha)}
+.tempo li{position:relative}
+.tempo li::before{content:'';position:absolute;left:-24px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--cobalto);box-shadow:0 0 0 3px var(--sup)}
+.lt-data{font:500 14px/1.4 var(--mono);color:var(--texto-2)}
+.lt-servico{margin-top:2px;font-weight:700}
+.lt-servico a{text-decoration-thickness:1.5px;text-underline-offset:3px}
+.contato{display:flex;gap:8px;margin-top:14px}
+.contato .btn{flex:1}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px">Este mockup precisa de JavaScript ligado.</p></noscript>
+<div class="palco">
+
+  <aside class="legenda" aria-label="Sobre esta demonstração">
+    <div class="marca"><span class="marca-simbolo" data-logo></span><span class="logotipo">camber</span></div>
+    <p class="slogan">A sua oficina no alinhamento perfeito.</p>
+    <p>Mockup navegável do MVP. Tudo roda aqui no navegador, com dados fictícios: nenhum Pix, nota fiscal ou mensagem sai desta página.</p>
+    <h2 class="rotulo">Roteiro de 60 segundos</h2>
+    <ol>
+      <li><b>Início:</b> duas pendências, um Pix para conferir e o Onix pronto sem pagamento.</li>
+      <li><b>Agenda de hoje › Abrir OS</b> do Gol: toque em Troca de pastilhas, Alinhamento e Pastilha dianteira.</li>
+      <li><b>Revisar › Enviar pelo WhatsApp</b> e <b>Compartilhar</b>.</li>
+      <li><b>Início:</b> Confirmar o Pix e Receber do Onix, em Pix.</li>
+      <li>Pendências zeradas: <b>Tudo em dia</b>.</li>
+    </ol>
+    <h2 class="rotulo">Também tem</h2>
+    <p>Cadastros de clientes, carros, estoque e tabela de serviços; agenda da semana; caixa com saldo, contas a pagar e resumo para o Imposto de Renda.</p>
+    <p>A <b>engrenagem</b>, no topo do app, troca o tema (claro, escuro ou do sistema) e simula outros dias.</p>
+  </aside>
+
+  <div class="aparelho">
+    <div class="app">
+      <header class="topo">
+        <span class="simbolo" data-logo></span>
+        <p class="topo-nome" id="topo-nome">Oficina do Zé</p>
+        <a class="icone-btn" href="#/ajustes" id="engrenagem" aria-label="Configurações"><span class="ic" aria-hidden="true">settings</span></a>
+      </header>
+
+      <main id="tela"></main>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+      <nav class="abas" aria-label="Navegação principal">
+        <a href="#/inicio" data-aba="inicio"><span class="pilula-nav"><span class="ic" aria-hidden="true">home</span></span>Início</a>
+        <a href="#/agenda" data-aba="agenda"><span class="pilula-nav"><span class="ic" aria-hidden="true">calendar_month</span></span>Agenda</a>
+        <a href="#/os" data-aba="os"><span class="pilula-nav"><span class="ic" aria-hidden="true">assignment</span></span>OS</a>
+        <a href="#/caixa" data-aba="caixa"><span class="pilula-nav"><span class="ic" aria-hidden="true">attach_money</span></span>Caixa</a>
+        <a href="#/cadastros" data-aba="cadastros"><span class="pilula-nav"><span class="ic" aria-hidden="true">folder</span></span>Cadastros</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =====================================================================
+   5. UTILIDADES
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const brl = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+const pad = n => String(n).padStart(4, '0');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ic = n => `<span class="ic" aria-hidden="true">${n}</span>`;
+const soma = (l, f = x => x.valor) => l.reduce((t, x) => t + f(x), 0);
+const juntar = l => l.length < 2 ? l.join('') : l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1];
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+const norm = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/-/g, '').toLowerCase();
+const dataISO = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const hoje = () => dataISO();
+const diaISO = n => { const d = new Date(); d.setDate(d.getDate() + n); return dataISO(d); };
+const noMes = n => { const d = new Date(); d.setDate(Math.max(1, d.getDate() + n)); return dataISO(d); };   // semente sempre dentro do mês atual
+const dataBR = iso => iso.split('-').reverse().join('/');
+const diaMes = iso => dataBR(iso).slice(0, 5);
+const quando = iso => iso === hoje() ? 'hoje' : iso === diaISO(1) ? 'amanhã' : iso === diaISO(-1) ? 'ontem' : diaMes(iso);
+const semana = (iso, fmt = 'short') => new Date(iso + 'T12:00').toLocaleDateString('pt-BR', { weekday: fmt }).replace('.', '');
+const agora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+const fmtPlaca = v => { const s = String(v).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7); return s.length > 3 ? s.slice(0, 3) + '-' + s.slice(3) : s; };
+const placaValida = p => /^[A-Z]{3}-\d[A-Z0-9]\d{2}$/.test(p);            // antiga (ABC-1234) e Mercosul (ABC-1D23)
+const lerValor = t => { const n = parseFloat(String(t).replace(/[^\d,]/g, '').replace(',', '.')); return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0; };
+const numCampo = v => Number(v).toFixed(2).replace('.', ',');
+const novoId = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const porHora = (a, b) => a.hora.localeCompare(b.hora);
+const unid = (qtd, un) => qtd === 1 ? un : ({ jogo: 'jogos', kit: 'kits', par: 'pares' }[un] || un);
+const MES = new Date().toLocaleDateString('pt-BR', { month: 'long' });
+const FORMAS = { pix: 'Pix', dinheiro: 'Dinheiro', cartao: 'Cartão', boleto: 'Boleto' };
+const CATS = { pecas: 'Peças e insumos', contas: 'Contas da oficina', outros: 'Outros' };
+
+/* Símbolo da marca, sem inclinação. Os arcos internos seguem o tema (Grafite no claro, Cinza no escuro). */
+const logo = () => '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke-linecap="round" fill="none"><path d="M82.77 27.06 A40 40 0 1 0 82.77 72.94" stroke="#1D4ED8" stroke-width="9"/><path class="logo-int" d="M72.94 33.94 A28 28 0 1 0 72.94 66.06" stroke-width="7"/><path class="logo-int" d="M63.11 40.82 A16 16 0 1 0 63.11 59.18" stroke-width="5"/><path d="M50 50 L96 50" stroke="#84CC16" stroke-width="5"/></g></svg>';
+
+/* =====================================================================
+   6. DADOS FICTÍCIOS FIXOS (visitas anteriores ao app)
+   ===================================================================== */
+const HISTORICO = {
+  'RTA-4F21': [
+    { data: '2026-03-14', n: 412, km: 98450, servico: 'Troca de óleo e filtro', pecas: 'Óleo 5W30 (4 L), filtro de óleo', valor: 210 },
+    { data: '2025-11-02', n: 355, km: 91120, servico: 'Freio dianteiro e alinhamento', pecas: 'Pastilhas dianteiras', valor: 340 },
+    { data: '2025-06-18', n: 298, km: 84300, servico: 'Suspensão dianteira', pecas: 'Bieletas (par), buchas da bandeja', valor: 460 },
+  ],
+  'QPA-2E19': [{ data: '2026-01-10', n: 377, km: 41200, servico: 'Balanceamento e rodízio de pneus', pecas: '', valor: 120 }],
+  'MRV-8B33': [{ data: '2026-07-22', n: 451, km: 60140, servico: 'Revisão dos 60 mil km', pecas: 'Óleo, filtros de ar e de óleo', valor: 520 }],
+  'ABD-3C45': [{ data: '2026-05-08', n: 430, km: 128900, servico: 'Troca de óleo', pecas: 'Óleo 5W30 (4 L)', valor: 270 }],
+};
+const FAV_SERV = ['s4', 's1', 's2', 's3'];   // serviços que aparecem como chips na OS
+const FAV_PECA = ['p1', 'p2', 'p3'];
+const ENTREGAS = [['hoje17', 'Hoje, 17h', () => ({ dia: hoje(), hora: '17:00' })], ['amanha12', 'Amanhã, 12h', () => ({ dia: diaISO(1), hora: '12:00' })], ['amanha17', 'Amanhã, 17h', () => ({ dia: diaISO(1), hora: '17:00' })]];
+
+/* =====================================================================
+   7. ESTADO — um objeto só (S). Pendências, saldo e prontuário são calculados dele.
+   ===================================================================== */
+const CHAVE = 'camber-demo-v2';
+const serv = (ref, nome, valor) => ({ tipo: 'servico', ref, nome, qtd: 1, valor });
+const peca = (ref, nome, qtd, valor) => ({ tipo: 'peca', ref, nome, qtd, valor });
+const rascunhoVazio = () => ({ passo: 1, placa: '', itens: [], entrega: 'hoje17', novo: { modelo: '', cliente: '' }, agenda: null });
+
+function semente() {
+  return {
+    v: 2,
+    oficina: { nome: 'Oficina do Zé', dono: 'Zé', descricao: 'Mecânica e alinhamento', telefone: '(14) 90000-0100' },
+    clientes: [
+      { id: 'cl1', nome: 'Carlos Mendes', telefone: '(14) 90000-0101', obs: '' },
+      { id: 'cl2', nome: 'Ana Paula Souza', telefone: '(14) 90000-0102', obs: '' },
+      { id: 'cl3', nome: 'Roberto Lima', telefone: '(14) 90000-0103', obs: 'Prefere pagar no Pix' },
+      { id: 'cl4', nome: 'Márcia Alves', telefone: '(14) 90000-0104', obs: '' },
+      { id: 'cl5', nome: 'Paulo Rocha', telefone: '(14) 90000-0105', obs: '' },
+    ],
+    carros: [
+      { placa: 'RTA-4F21', modelo: 'Gol 1.6', ano: 2017, cor: 'Prata', motor: '1.6 8V', combustivel: 'Flex', km: 98450, cliente: 'cl1', obs: 'Óleo 5W30 semissintético' },
+      { placa: 'QPA-2E19', modelo: 'HB20 1.0', ano: 2020, cor: 'Branco', motor: '1.0 12V', combustivel: 'Flex', km: 43800, cliente: 'cl2', obs: '' },
+      { placa: 'MRV-8B33', modelo: 'Strada 1.4', ano: 2019, cor: 'Vermelha', motor: '1.4 8V', combustivel: 'Flex', km: 66210, cliente: 'cl3', obs: '' },
+      { placa: 'JKL-5A90', modelo: 'Onix 1.0', ano: 2019, cor: 'Preto', motor: '1.0 12V', combustivel: 'Flex', km: 52300, cliente: 'cl4', obs: '' },
+      { placa: 'ABD-3C45', modelo: 'Fiesta 1.0', ano: 2014, cor: 'Azul', motor: '1.0 8V', combustivel: 'Flex', km: 131500, cliente: 'cl5', obs: 'Pneu traseiro esquerdo com remendo' },
+    ],
+    estoque: [
+      { id: 'p1', nome: 'Pastilha de freio dianteira', curto: 'Pastilha dianteira', un: 'jogo', qtd: 4, min: 2, custo: 95, preco: 180, nf: true },
+      { id: 'p2', nome: 'Óleo 5W30', un: 'L', qtd: 12, min: 8, custo: 32, preco: 55, nf: true },
+      { id: 'p3', nome: 'Filtro de óleo', un: 'un.', qtd: 6, min: 3, custo: 18, preco: 42, nf: true },
+      { id: 'p4', nome: 'Kit correia dentada', un: 'kit', qtd: 1, min: 1, custo: 210, preco: 380, nf: true },
+      { id: 'p5', nome: 'Amortecedor dianteiro', un: 'un.', qtd: 2, min: 2, custo: 150, preco: 260, nf: true },
+      { id: 'p6', nome: 'Lâmpada H4', un: 'un.', qtd: 10, min: 4, custo: 12, preco: 30, nf: true },
+      { id: 'p7', nome: 'Fluido de freio DOT 4', un: 'un.', qtd: 5, min: 2, custo: 22, preco: 45, nf: true },
+    ],
+    servicos: [
+      { id: 's1', nome: 'Alinhamento', preco: 80, tempo: '40 min' },
+      { id: 's2', nome: 'Balanceamento', preco: 60, tempo: '30 min' },
+      { id: 's3', nome: 'Troca de óleo', preco: 50, tempo: '30 min' },
+      { id: 's4', nome: 'Troca de pastilhas', preco: 120, tempo: '1 h' },
+      { id: 's5', nome: 'Revisão geral', preco: 250, tempo: '3 h' },
+      { id: 's6', nome: 'Diagnóstico com scanner', preco: 90, tempo: '40 min' },
+      { id: 's7', nome: 'Troca de correia dentada', preco: 240, tempo: '3 h' },
+      { id: 's8', nome: 'Suspensão dianteira', preco: 190, tempo: '2 h' },
+    ],
+    os: [
+      { n: 480, placa: 'JKL-5A90', data: diaISO(-1), entrega: { dia: hoje(), hora: '17:00' }, exec: 'finalizado', pag: 'pendente', forma: '', itens: [peca('p5', 'Amortecedor dianteiro', 1, 260), serv('s8', 'Suspensão dianteira', 190)] },
+      { n: 481, placa: 'QPA-2E19', data: hoje(), entrega: { dia: hoje(), hora: '12:00' }, exec: 'finalizado', pag: 'pago', forma: 'pix', itens: [peca('p1', 'Pastilha de freio dianteira', 1, 180), serv('s4', 'Troca de pastilhas', 120), serv('s1', 'Alinhamento', 80)] },
+      { n: 482, placa: 'MRV-8B33', data: hoje(), entrega: { dia: hoje(), hora: '15:00' }, exec: 'finalizado', pag: 'pendente', forma: '', itens: [peca('p4', 'Kit correia dentada', 1, 380), serv('s7', 'Troca de correia dentada', 240)] },
+    ],
+    pix: [   // Pix que caíram na conta hoje (simulado)
+      { id: 'x1', nome: 'Ana Paula Souza', valor: 380, hora: '12:10', os: 481, ok: true },
+      { id: 'x2', nome: 'Roberto Lima', valor: 620, hora: '15:20', os: 482, ok: false },
+    ],
+    mov: [
+      { id: 'm1', tipo: 'e', data: noMes(-18), desc: 'OS #0458 · Revisão geral', valor: 1480, forma: 'pix' },
+      { id: 'm2', tipo: 's', data: noMes(-16), desc: 'Auto Peças Centro · peças', valor: 1320, forma: 'boleto', cat: 'pecas', nf: true },
+      { id: 'm3', tipo: 'e', data: noMes(-14), desc: 'OS #0463 · Troca de embreagem', valor: 1250, forma: 'cartao' },
+      { id: 'm4', tipo: 's', data: noMes(-11), desc: 'Conta de luz', valor: 290, forma: 'boleto', cat: 'contas', nf: true },
+      { id: 'm5', tipo: 'e', data: noMes(-9), desc: 'OS #0470 · Suspensão', valor: 890, forma: 'pix' },
+      { id: 'm6', tipo: 's', data: noMes(-7), desc: 'Distribuidora de lubrificantes', valor: 640, forma: 'pix', cat: 'pecas', nf: true },
+      { id: 'm7', tipo: 'e', data: noMes(-5), desc: 'OS #0474 · Freios', valor: 460, forma: 'dinheiro' },
+      { id: 'm8', tipo: 's', data: noMes(-3), desc: 'Ferramentas e insumos', valor: 180, forma: 'dinheiro', cat: 'outros', nf: true },
+      { id: 'm9', tipo: 'e', data: noMes(-2), desc: 'OS #0477 · Troca de óleo', valor: 310, forma: 'pix' },
+      { id: 'm10', tipo: 'e', data: hoje(), desc: 'OS #0481 · Ana Paula Souza', valor: 380, forma: 'pix', os: 481 },
+    ],
+    contas: [
+      { id: 'c1', nome: 'Auto Peças Centro', det: 'Boleto · pastilhas e correia', valor: 540, dia: diaISO(4), paga: false },
+      { id: 'c2', nome: 'Aluguel do galpão', det: 'Aluguel do mês', valor: 1800, dia: diaISO(7), paga: false },
+    ],
+    agenda: [
+      { id: 'a1', dia: hoje(), hora: '07:30', placa: 'QPA-2E19', servico: 'Troca de pastilhas', obs: '', os: 481 },
+      { id: 'a2', dia: hoje(), hora: '08:00', placa: 'RTA-4F21', servico: 'Freio fazendo barulho e alinhamento', obs: '', os: null },
+      { id: 'a3', dia: hoje(), hora: '14:00', placa: 'ABD-3C45', servico: 'Troca de óleo', obs: '', os: null },
+      { id: 'a4', dia: diaISO(1), hora: '09:00', placa: 'JKL-5A90', servico: 'Retorno: conferir a suspensão', obs: '', os: null },
+      { id: 'a5', dia: diaISO(1), hora: '13:30', placa: 'MRV-8B33', servico: 'Alinhamento', obs: '', os: null },
+      { id: 'a6', dia: diaISO(3), hora: '08:30', placa: 'QPA-2E19', servico: 'Revisão dos 45 mil km', obs: '', os: null },
+    ],
+    rascunho: rascunhoVazio(),
+  };
+}
+
+let S;
+try { S = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) { S = null; }
+if (!S || S.v !== 2 || !Array.isArray(S.os)) S = semente();
+function salvar() { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) { /* sem armazenamento: a demo segue só na memória */ } }
+
+const ui = { dia: null, filtroOS: 'aberto', busca: {}, receber: null, vincular: null, prefill: null, flash: null, alvo: null };
+
+const carroPor = p => S.carros.find(c => c.placa === p);
+const clientePor = id => S.clientes.find(c => c.id === id);
+const osPor = n => S.os.find(o => o.n === n);
+const donoDe = placa => clientePor((carroPor(placa) || {}).cliente) || { nome: 'Cliente' };
+const nomeCarro = k => k ? k.modelo + (k.ano ? ' · ' + k.ano : '') : 'Carro';
+const linhaTotal = i => i.qtd * i.valor;
+const total = o => soma(o.itens, linhaTotal);
+const iniciais = nome => { const p = String(nome).split(/\s+/).filter(Boolean); return (p.length > 1 ? p[0][0] + p[p.length - 1][0] : (p[0] || '').slice(0, 2)).toUpperCase(); };
+
+/* Registrar pagamento: muda o status da OS e lança a entrada no caixa. */
+function receber(n, forma) {
+  const o = osPor(n);
+  if (!o || o.pag === 'pago') return;
+  o.pag = 'pago'; o.forma = forma;
+  S.mov.push({ id: novoId('m'), tipo: 'e', data: hoje(), desc: `OS #${pad(n)} · ${donoDe(o.placa).nome}`, valor: total(o), forma, os: n });
+  if (forma === 'pix') S.pix.filter(x => x.os === n).forEach(x => { x.ok = true; });
+}
+function confirmarPix(id) {
+  const x = S.pix.find(p => p.id === id);
+  if (!x) return;
+  x.ok = true;
+  if (x.os) receber(x.os, 'pix');
+}
+
+/* Cenários do "Simular" nas Configurações. 1 = dia comum (estado inicial). */
+function cenario(c) {
+  S = semente();
+  if (c === 0) { confirmarPix('x2'); receber(480, 'dinheiro'); }
+  if (c === 2) {
+    S.contas[0].dia = diaISO(-1);
+    S.estoque[4].nf = false;
+    S.estoque[1].qtd = 3;
+    Object.assign(S.os[0], { exec: 'pendente', entrega: { dia: diaISO(-1), hora: '17:00' } });
+    S.os.unshift({ n: 478, placa: 'ABD-3C45', data: diaISO(-2), entrega: { dia: diaISO(-2), hora: '17:00' }, exec: 'finalizado', pag: 'pendente', forma: '', itens: [serv('s6', 'Diagnóstico com scanner', 90), peca('p6', 'Lâmpada H4', 2, 30)] });
+    S.pix.push({ id: 'x3', nome: 'P. Rocha', valor: 150, hora: '10:02', os: null, ok: false });
+  }
+}
+
+/* Pendências do dia: o que o mecânico precisa resolver, com a ação ao lado. sev 2 = urgente. */
+function pendencias() {
+  const p = [], hj = hoje();
+  for (const c of S.contas) if (!c.paga && c.dia < hj)
+    p.push({ sev: 2, ic: 'event_busy', t: 'Conta vencida', d: `${c.nome} · ${brl(c.valor)}`, bt: 'Paguei', acao: 'pagar', id: c.id });
+  for (const i of S.estoque) if (!i.nf)
+    p.push({ sev: 2, ic: 'receipt_long', t: 'Peça sem nota fiscal', d: `${i.nome}, no estoque`, bt: 'Anexar', acao: 'nota', id: i.id });
+  for (const o of S.os) if (o.exec === 'pendente' && o.entrega && o.entrega.dia < hj)
+    p.push({ sev: 2, ic: 'schedule', t: 'Entrega atrasada', d: `${carroPor(o.placa)?.modelo || 'Carro'} · OS #${pad(o.n)} · era para ${quando(o.entrega.dia)}`, bt: 'Ver OS', rota: `#/os/${o.n}` });
+  for (const x of S.pix) if (!x.ok)
+    p.push(x.os
+      ? { sev: 1, ic: 'qr_code_2', t: `Pix de ${brl(x.valor)} para conferir`, d: `${x.nome} · é da OS #${pad(x.os)}?`, bt: 'Confirmar', acao: 'pix', id: x.id }
+      : { sev: 1, ic: 'qr_code_2', t: `Pix de ${brl(x.valor)} sem OS`, d: `${x.nome} · diga de qual serviço é`, bt: 'Ligar', rota: '#/caixa', alvo: 't-pix' });
+  const comPix = new Set(S.pix.filter(x => !x.ok && x.os).map(x => x.os));
+  for (const o of S.os) if (o.exec === 'finalizado' && o.pag === 'pendente' && !comPix.has(o.n))
+    p.push({ sev: 1, ic: 'payments', t: `${carroPor(o.placa)?.modelo || 'Carro'} pronto, falta receber`, d: `OS #${pad(o.n)} · ${donoDe(o.placa).nome} · ${brl(total(o))}`, bt: 'Receber', rota: `#/os/${o.n}` });
+  for (const c of S.contas) if (!c.paga && c.dia >= hj && c.dia <= diaISO(1))
+    p.push({ sev: 1, ic: 'event', t: c.dia === hj ? 'Conta vence hoje' : 'Conta vence amanhã', d: `${c.nome} · ${brl(c.valor)}`, bt: 'Paguei', acao: 'pagar', id: c.id });
+  for (const i of S.estoque) if (i.qtd < i.min)
+    p.push({ sev: 1, ic: 'inventory_2', t: 'Estoque baixo', d: `${i.nome}: ${i.qtd} ${unid(i.qtd, i.un)} (mínimo ${i.min})`, bt: 'Repor', rota: `#/form/peca/${i.id}` });
+  return p.sort((a, b) => b.sev - a.sev);
+}
+
+/* Prontuário: OS feitas no app + visitas anteriores. */
+function prontuario(placa) {
+  const doApp = S.os.filter(o => o.placa === placa).sort((a, b) => b.n - a.n).map(o => ({
+    data: o.data, n: o.n, km: 0, app: true, aberta: o.exec === 'pendente' || o.pag === 'pendente', valor: total(o),
+    servico: juntar(o.itens.filter(i => i.tipo === 'servico').map(i => i.nome)) || 'Troca de peças',
+    pecas: o.itens.filter(i => i.tipo === 'peca').map(i => (i.qtd > 1 ? i.qtd + '× ' : '') + i.nome).join(', '),
+  }));
+  return [...doApp, ...(HISTORICO[placa] || [])];
+}
+
+const stExec = o => o.exec === 'finalizado' ? ['s0', 'check_circle', 'Serviço finalizado'] : o.entrega && o.entrega.dia < hoje() ? ['s2', 'schedule', 'Entrega atrasada'] : ['s1', 'build', 'Serviço pendente'];
+const stPag = o => o.pag === 'pago' ? ['s0', 'check_circle', `Pago · ${FORMAS[o.forma] || ''}`] : ['s1', 'payments', 'Pagamento pendente'];
+const pilula = ([cls, icone, txt]) => `<span class="pilula ${cls}">${ic(icone)}${esc(txt)}</span>`;
+
+/* =====================================================================
+   8. TELAS — cada função devolve o HTML da tela
+   ===================================================================== */
+const volta = (href, txt) => `<a class="volta" href="${href}">${ic('arrow_back')}${esc(txt)}</a>`;
+const tela = (corpo, acoes = '') => `<div class="tela"><div class="pad">${corpo}</div>${acoes ? `<div class="acoes">${acoes}</div>` : ''}</div>`;
+const naoAchou = (href, txt) => tela(`${volta(href, txt)}<h1 class="titulo" tabindex="-1">Não encontrado</h1><p class="sub">Esse item não existe mais nesta demonstração.</p>`);
+
+/* --- Início */
+function telaInicio() {
+  const h = new Date().getHours(), P = pendencias(), urg = P.filter(p => p.sev === 2).length;
+  const entrou = soma(S.mov.filter(m => m.tipo === 'e' && m.data === hoje()));
+  const aReceber = S.os.filter(o => o.pag === 'pendente');
+  const agendaHoje = S.agenda.filter(a => a.dia === hoje()).sort(porHora);
+  const botao = p => p.acao
+    ? `<button type="button" class="btn btn-sec btn-mini" data-acao="${p.acao}" data-id="${p.id}" data-key="pend-${p.acao}-${p.id}">${p.bt}</button>`
+    : `<a class="btn btn-sec btn-mini" href="${p.rota}"${p.alvo ? ` data-alvo="${p.alvo}"` : ''}>${p.bt}</a>`;
+  return tela(`
+    <p class="rotulo">${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+    <h1 class="titulo" tabindex="-1">${h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'}${S.oficina.dono ? ', ' + esc(S.oficina.dono) : ''}</h1>
+    <div class="kpis">
+      <a class="card kpi" href="#/caixa"><p class="rotulo">Entrou hoje</p><p class="kpi-valor">${brl(entrou)}</p><p class="kpi-sub">no caixa</p></a>
+      <a class="card kpi" href="#/os"><p class="rotulo">A receber</p><p class="kpi-valor">${brl(soma(aReceber, total))}</p><p class="kpi-sub">${plural(aReceber.length, 'OS', 'OS')}</p></a>
+    </div>
+    <h2 class="secao" id="t-pend" tabindex="-1"><span class="secao-t">Pendências ${P.length ? `<span class="contador" aria-label="${P.length}${urg ? `, ${urg} urgente${urg > 1 ? 's' : ''}` : ''}">${P.length}</span>` : ''}</span></h2>
+    <ul class="lista">${P.length ? P.map(p => `<li class="card pend s${p.sev}">
+        <span class="pend-ic">${ic(p.ic)}</span>
+        <div class="pend-txt"><p class="pend-t">${p.sev === 2 ? '<span class="urgente">Urgente</span>' : ''}${esc(p.t)}</p><p class="pend-d">${esc(p.d)}</p></div>
+        ${botao(p)}</li>`).join('')
+      : `<li class="card em-dia"><span class="pend-ic s0">${ic('check_circle')}</span><div><p class="pend-t">Tudo em dia</p><p class="pend-d">Nenhuma pendência agora. Pix conferidos, contas e notas em ordem.</p></div></li>`}
+    </ul>
+    <h2 class="secao">Agenda de hoje <a href="#/agenda">Ver agenda${ic('chevron_right')}</a></h2>
+    <ul class="lista-card">${agendaHoje.length ? agendaHoje.map(linhaAgenda).join('') : '<li class="item-lista vazio">Nenhum horário marcado para hoje.</li>'}</ul>`,
+    `<a class="btn btn-prim" href="#/os/nova" data-acao="nova-os">${ic('add')}Nova OS</a>`);
+}
+
+function linhaAgenda(a) {
+  const k = carroPor(a.placa), dono = donoDe(a.placa);
+  const acao = a.os
+    ? `<a class="pilula s0" href="#/os/${a.os}">${ic('assignment')}OS #${pad(a.os)}</a>`
+    : a.dia === hoje() ? `<button type="button" class="btn btn-sec btn-mini" data-acao="abrir" data-id="${a.id}" data-key="ag-${a.id}">Abrir OS</button>` : '';
+  return `<li class="item-lista"><span class="hora">${esc(a.hora)}</span>
+    <div class="corpo"><p class="nome">${esc(k ? k.modelo : a.placa)} · ${esc(dono.nome)}</p><p class="linha-sub">${esc(a.servico)}</p></div>${acao}</li>`;
+}
+
+/* --- Agenda */
+function telaAgenda() {
+  const dias = [0, 1, 2, 3, 4, 5].map(diaISO);
+  if (!dias.includes(ui.dia)) ui.dia = hoje();
+  const doDia = S.agenda.filter(a => a.dia === ui.dia).sort(porHora);
+  const entregas = S.os.filter(o => o.entrega && o.entrega.dia === ui.dia).sort((a, b) => a.entrega.hora.localeCompare(b.entrega.hora));
+  return tela(`
+    <h1 class="titulo" tabindex="-1">Agenda</h1>
+    <p class="sub">Horários, entregas e a fila de carros.</p>
+    <div class="seg dias" role="group" aria-label="Escolha o dia">${dias.map((d, i) =>
+      `<button type="button" class="dia" aria-pressed="${d === ui.dia}" data-acao="dia" data-dia="${d}" data-key="dia-${d}" aria-label="${i === 0 ? 'Hoje, ' : ''}${semana(d, 'long')}, ${diaMes(d)}"><small>${i === 0 ? 'Hoje' : semana(d)}</small><b>${d.slice(8)}</b></button>`).join('')}</div>
+    <h2 class="secao">Horários <span class="linha-sub">${ui.dia === hoje() ? 'hoje' : semana(ui.dia, 'long') + ', ' + diaMes(ui.dia)}</span></h2>
+    <ul class="lista-card">${doDia.length ? doDia.map(linhaAgenda).join('') : '<li class="item-lista vazio">Nenhum horário marcado neste dia.</li>'}</ul>
+    <h2 class="secao">Entregas previstas</h2>
+    <ul class="lista-card">${entregas.length ? entregas.map(o => `<li><a class="item-lista" href="#/os/${o.n}">
+        <span class="hora">${esc(o.entrega.hora)}</span>
+        <div class="corpo"><p class="nome">${esc(carroPor(o.placa)?.modelo || o.placa)} · OS #${pad(o.n)}</p><div class="pilulas">${pilula(stExec(o))}</div></div>${ic('chevron_right')}</a></li>`).join('')
+      : '<li class="item-lista vazio">Nenhuma entrega prevista neste dia.</li>'}</ul>`,
+    `<a class="btn btn-prim" href="#/form/agenda">${ic('add')}Agendar horário</a>`);
+}
+
+/* --- OS: lista, detalhe e nova */
+function telaOS(sub) {
+  if (sub === 'nova') return telaNovaOS();
+  if (sub) return telaOSDetalhe(+sub);
+  const abertas = S.os.filter(o => o.exec === 'pendente' || o.pag === 'pendente');
+  const lista = (ui.filtroOS === 'aberto' ? abertas : S.os).slice().sort((a, b) => b.n - a.n);
+  return tela(`
+    <h1 class="titulo" tabindex="-1">Ordens de serviço</h1>
+    <p class="sub">Cada OS tem dois status: o serviço e o pagamento.</p>
+    <div class="seg" style="grid-template-columns:1fr 1fr;margin-top:16px" role="group" aria-label="Filtrar">
+      <button type="button" data-acao="filtro" data-f="aberto" aria-pressed="${ui.filtroOS === 'aberto'}" data-key="f-aberto">Em aberto (${abertas.length})</button>
+      <button type="button" data-acao="filtro" data-f="todas" aria-pressed="${ui.filtroOS === 'todas'}" data-key="f-todas">Todas (${S.os.length})</button>
+    </div>
+    <ul class="lista" style="margin-top:12px">${lista.length ? lista.map(o => `<li><a class="card" style="display:block;text-decoration:none" href="#/os/${o.n}">
+        <div class="linha-topo"><span class="nome mono">OS #${pad(o.n)}</span><span class="valor">${brl(total(o))}</span></div>
+        <p class="linha-sub">${esc(nomeCarro(carroPor(o.placa)))} · ${esc(o.placa)} · ${esc(donoDe(o.placa).nome)}</p>
+        <div class="pilulas" style="margin-top:8px">${pilula(stExec(o))}${pilula(stPag(o))}</div></a></li>`).join('')
+      : '<li class="card vazio">Nenhuma OS em aberto. Tudo entregue e pago.</li>'}</ul>`,
+    `<a class="btn btn-prim" href="#/os/nova" data-acao="nova-os">${ic('add')}Nova OS</a>`);
+}
+
+function telaOSDetalhe(n) {
+  const o = osPor(n);
+  if (!o) return naoAchou('#/os', 'Ordens de serviço');
+  const k = carroPor(o.placa), dono = donoDe(o.placa);
+  let acoes;
+  if (ui.receber === n) acoes = `<div class="receber"><div class="receber-topo"><p class="rotulo" id="t-forma">Como o cliente pagou?</p><button type="button" class="icone-btn" data-acao="cancelar-receber" aria-label="Cancelar">${ic('close')}</button></div>
+      <div class="formas" role="group" aria-labelledby="t-forma">${['pix', 'dinheiro', 'cartao'].map(f => `<button type="button" class="btn btn-prim btn-mini" data-acao="forma" data-os="${n}" data-f="${f}" data-key="forma-${f}">${FORMAS[f]}</button>`).join('')}</div></div>`;
+  else {
+    const comp = `<a class="btn btn-sec btn-quadrado" href="#/comprovante/${n}" aria-label="Ver comprovante">${ic('receipt_long')}</a>`;
+    acoes = o.exec === 'pendente' ? comp + `<button type="button" class="btn btn-prim" data-acao="finalizar" data-os="${n}" data-key="finalizar">${ic('check')}Finalizar serviço</button>`
+      : o.pag === 'pendente' ? comp + `<button type="button" class="btn btn-prim" data-acao="receber" data-os="${n}" data-key="receber">${ic('payments')}Receber pagamento</button>`
+      : `<a class="btn btn-prim" href="#/comprovante/${n}">${ic('receipt_long')}Ver comprovante</a>`;
+  }
+  return tela(`
+    ${volta('#/os', 'Ordens de serviço')}
+    <h1 class="titulo mono" tabindex="-1">OS #${pad(n)}</h1>
+    <p class="sub">Aberta ${quando(o.data)}${o.entrega ? ` · entrega ${quando(o.entrega.dia)} às ${esc(o.entrega.hora)}` : ''}</p>
+    <a class="card item-lista" style="margin-top:16px" href="#/carro/${o.placa}"><span class="placa">${esc(o.placa)}</span>
+      <div class="corpo"><p class="nome">${esc(nomeCarro(k))}</p><p class="linha-sub">${esc(dono.nome)}</p></div>${ic('chevron_right')}</a>
+    <div class="card" style="margin-top:8px;padding-top:4px;padding-bottom:4px">
+      <div class="status-linha"><p class="rotulo">Serviço</p>${pilula(stExec(o))}</div>
+      <div class="status-linha"><p class="rotulo">Pagamento</p>${pilula(stPag(o))}</div>
+    </div>
+    <h2 class="secao">Serviços e peças</h2>
+    <div class="card">
+      <ul class="rev-itens" style="padding-top:0">${o.itens.map(i => `<li><span>${i.qtd > 1 ? i.qtd + '× ' : ''}${esc(i.nome)}<br><span class="linha-sub">${i.tipo === 'peca' ? 'Peça' : 'Mão de obra'}</span></span><span>${brl(linhaTotal(i))}</span></li>`).join('')}</ul>
+      <div class="total-linha" style="border:0;margin-top:0"><span class="rotulo">Total</span><strong>${brl(total(o))}</strong></div>
+    </div>`, acoes);
+}
+
+let ultimoAchado = null;
+function achado() {
+  const r = S.rascunho, p = r.placa, ok = placaValida(p), k = ok && carroPor(p);
+  const btn = $('#seguir');
+  if (btn) btn.disabled = !ok;
+  let h = '';
+  if (k) {
+    const v = prontuario(p);
+    h = `<div class="card achado">${ic('directions_car')}<div><p class="achado-carro">${esc(nomeCarro(k))}</p><p class="linha-sub">${esc(donoDe(p).nome)}</p>${v[0] ? `<p class="linha-sub">Última visita ${dataBR(v[0].data)} · ${plural(v.length, 'serviço', 'serviços')} no prontuário</p>` : ''}</div></div>`;
+  } else if (ok) {
+    h = `<div class="card achado" style="display:block"><p class="achado-carro">Carro novo por aqui</p><p class="linha-sub">Preencha se quiser. O carro e o cliente entram no cadastro com esta OS.</p>
+      <div class="campo"><label for="novo-modelo">Modelo do carro <span class="opc">(opcional)</span></label><input class="entrada" id="novo-modelo" value="${esc(r.novo.modelo)}" placeholder="Ex.: Uno 1.0" autocomplete="off"></div>
+      <div class="campo"><label for="novo-cliente">Nome do cliente <span class="opc">(opcional)</span></label><input class="entrada" id="novo-cliente" value="${esc(r.novo.cliente)}" autocomplete="off"></div></div>`;
+  } else if (p.length === 8) {
+    h = '<p class="dica">Confira a placa: 3 letras e 4 caracteres, como ABC-1D23.</p>';
+  }
+  if (h !== ultimoAchado) { $('#achado').innerHTML = h; ultimoAchado = h; }
+}
+
+const chipItem = (tipo, id) => {
+  const x = (tipo === 'servico' ? S.servicos : S.estoque).find(y => y.id === id);
+  if (!x) return '';
+  const on = S.rascunho.itens.some(i => i.ref === id);
+  return `<button type="button" class="chip" aria-pressed="${on}" data-acao="item" data-tipo="${tipo}" data-id="${id}" data-key="chip-${id}">${ic(on ? 'check' : 'add')}${esc(x.curto || x.nome)}</button>`;
+};
+const selOutro = tipo => {
+  const favs = tipo === 'servico' ? FAV_SERV : FAV_PECA;
+  const lista = (tipo === 'servico' ? S.servicos : S.estoque).filter(x => !favs.includes(x.id) && !S.rascunho.itens.some(i => i.ref === x.id));
+  if (!lista.length) return '';
+  return `<label class="sr" for="outro-${tipo}">${tipo === 'servico' ? 'Adicionar outro serviço da tabela' : 'Adicionar outra peça do estoque'}</label>
+    <select class="entrada sel-outro" id="outro-${tipo}" data-add="${tipo}" data-key="outro-${tipo}"><option value="">${tipo === 'servico' ? '+ Outro serviço da tabela…' : '+ Outra peça do estoque…'}</option>${lista.map(x =>
+      `<option value="${x.id}">${esc(x.nome)} · ${brl(x.preco)}${tipo === 'peca' ? ` · ${x.qtd} ${unid(x.qtd, x.un)}` : ''}</option>`).join('')}</select>`;
+};
+const linhaItem = it => {
+  const est = it.tipo === 'peca' && S.estoque.find(p => p.id === it.ref);
+  const avisos = est ? [!est.nf && 'Peça sem nota fiscal', it.qtd > est.qtd && `Só tem ${est.qtd} ${unid(est.qtd, est.un)} no estoque`].filter(Boolean) : [];
+  return `<li class="card item" data-key="item-${it.ref}" tabindex="-1">
+    <div class="item-topo">
+      <div class="item-nome"><p>${esc(it.nome)}</p><p class="item-tipo">${it.tipo === 'peca' ? `Peça · ${brl(it.valor)} cada` : 'Mão de obra'}</p></div>
+      ${it.tipo === 'servico'
+        ? `<label class="valor-campo"><span aria-hidden="true">R$</span><input inputmode="decimal" autocomplete="off" value="${numCampo(it.valor)}" data-valor="${it.ref}" data-key="valor-${it.ref}" aria-label="Valor de ${esc(it.nome)}, em reais"></label>`
+        : `<p class="valor">${brl(linhaTotal(it))}</p>`}
+      <button type="button" class="icone-btn" data-acao="tirar" data-id="${it.ref}" aria-label="Remover ${esc(it.nome)}">${ic('close')}</button>
+    </div>
+    ${it.tipo === 'peca' ? `<div class="item-rodape">
+      <div class="qtd" role="group" aria-label="Quantidade de ${esc(it.nome)}">
+        <button type="button" data-acao="qtd" data-id="${it.ref}" data-d="-1" data-key="menos-${it.ref}" aria-label="Diminuir"${it.qtd <= 1 ? ' disabled' : ''}>${ic('remove')}</button>
+        <output aria-live="polite">${it.qtd}</output>
+        <button type="button" data-acao="qtd" data-id="${it.ref}" data-d="1" data-key="mais-${it.ref}" aria-label="Aumentar">${ic('add')}</button>
+      </div>
+      ${avisos.map(a => `<span class="pilula s1">${ic('warning')}${esc(a)}</span>`).join('')}</div>` : ''}
+  </li>`;
+};
+
+function telaNovaOS() {
+  const r = S.rascunho;
+  if (r.passo > 1 && !placaValida(r.placa)) r.passo = 1;
+  if (r.passo > 2 && !r.itens.length) r.passo = 2;
+  const k = carroPor(r.placa);
+  const nome = k ? nomeCarro(k) : (r.novo.modelo || 'Carro novo');
+  const voltar = p => `<button type="button" class="btn btn-sec btn-quadrado" data-acao="passo" data-p="${p}" aria-label="Voltar ao passo ${p}">${ic('arrow_back')}</button>`;
+  const passos = `<ol class="passos" aria-label="Passo ${r.passo} de 3">${['Carro', 'Itens', 'Enviar'].map((t, i) =>
+    `<li class="${i + 1 < r.passo ? 'feito' : ''}"${i + 1 === r.passo ? ' aria-current="step"' : ''}>${i + 1} · ${t}</li>`).join('')}</ol>`;
+
+  if (r.passo === 1) {
+    const agendados = S.agenda.filter(a => a.dia === hoje() && !a.os).sort(porHora);
+    return tela(`${volta('#/os', 'Ordens de serviço')}${passos}
+      <h1 class="titulo" tabindex="-1">Nova OS</h1>
+      <p class="sub">Monte a Ordem de Serviço (OS) em 3 toques.</p>
+      <label class="rotulo campo-rotulo" for="placa" style="margin-bottom:8px">Placa do carro</label>
+      <input id="placa" class="placa-campo" value="${esc(r.placa)}" maxlength="8" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="ABC-1D23" enterkeyhint="next" data-key="placa">
+      ${agendados.length ? `<p class="rotulo campo-rotulo" id="t-agendados">Agendados para hoje</p><div class="chips" role="group" aria-labelledby="t-agendados">${agendados.map(a =>
+        `<button type="button" class="chip" data-acao="usar-placa" data-placa="${a.placa}" data-key="usa-${a.id}"><span class="mono">${a.hora}</span>${esc(carroPor(a.placa)?.modelo || a.placa)}</button>`).join('')}</div>` : ''}
+      <div id="achado" aria-live="polite"></div>`,
+      `<button type="button" class="btn btn-prim" id="seguir" data-acao="passo" data-p="2" data-key="seguir">Continuar${ic('arrow_forward')}</button>`);
+  }
+  if (r.passo === 2) {
+    return tela(`${passos}
+      <h1 class="titulo" tabindex="-1">O que vai ser feito?</h1>
+      <p class="carro-linha"><span class="placa">${esc(r.placa)}</span><span>${esc(nome)}</span></p>
+      <p class="rotulo campo-rotulo" id="t-serv">Serviços</p>
+      <div class="chips" role="group" aria-labelledby="t-serv">${FAV_SERV.map(id => chipItem('servico', id)).join('')}</div>
+      ${selOutro('servico')}
+      <p class="rotulo campo-rotulo" id="t-pec">Peças do estoque</p>
+      <div class="chips" role="group" aria-labelledby="t-pec">${FAV_PECA.map(id => chipItem('peca', id)).join('')}</div>
+      ${selOutro('peca')}
+      ${r.itens.length ? `<h2 class="secao" style="font-size:17px">Ajuste valores e quantidades</h2><ul class="lista">${r.itens.map(linhaItem).join('')}</ul>` : ''}`,
+      voltar(1) + `<button type="button" class="btn btn-prim" data-acao="passo" data-p="3" data-key="revisar"${r.itens.length ? '' : ' disabled'}>${r.itens.length ? `Revisar · <span id="os-total">${brl(soma(r.itens, linhaTotal))}</span>` : 'Escolha um item'}${ic('arrow_forward')}</button>`);
+  }
+  const semNota = r.itens.filter(i => i.tipo === 'peca' && !(S.estoque.find(p => p.id === i.ref) || {}).nf).length;
+  return tela(`${passos}
+    <h1 class="titulo" tabindex="-1">Revise e envie</h1>
+    <div class="card" style="margin-top:14px">
+      <div class="carro-linha" style="margin:0 0 4px"><span class="placa">${esc(r.placa)}</span><div><p class="nome">${esc(nome)}</p><p class="linha-sub">${esc(k ? donoDe(r.placa).nome : r.novo.cliente || 'Cliente novo')}</p></div></div>
+      <ul class="rev-itens">${r.itens.map(i => `<li><span>${i.qtd > 1 ? i.qtd + '× ' : ''}${esc(i.nome)}</span><span>${brl(linhaTotal(i))}</span></li>`).join('')}</ul>
+      <div class="total-linha" style="border:0"><span class="rotulo">Total</span><strong>${brl(soma(r.itens, linhaTotal))}</strong></div>
+    </div>
+    <p class="rotulo campo-rotulo" id="t-ent">Entrega prevista</p>
+    <div class="chips" role="group" aria-labelledby="t-ent">${ENTREGAS.map(([id, txt]) => `<button type="button" class="chip" aria-pressed="${r.entrega === id}" data-acao="entrega" data-v="${id}" data-key="ent-${id}">${txt}</button>`).join('')}</div>
+    ${semNota ? `<div class="aviso">${ic('warning')}<span>${semNota === 1 ? 'Uma peça foi comprada' : semNota + ' peças foram compradas'} sem nota fiscal. Dá para anexar depois, no Estoque.</span></div>` : ''}
+    <p class="dica">O cliente recebe o orçamento no WhatsApp, e a OS entra no prontuário do carro.</p>`,
+    voltar(2) + `<button type="button" class="btn btn-prim" data-acao="enviar">${ic('send')}Enviar pelo WhatsApp</button>`);
+}
+
+/* --- Comprovante */
+function telaComprovante(n) {
+  const o = osPor(+n);
+  if (!o) return naoAchou('#/os', 'Ordens de serviço');
+  const k = carroPor(o.placa), of = S.oficina;
+  return tela(`
+    ${volta(`#/os/${o.n}`, `OS #${pad(o.n)}`)}
+    <h1 class="titulo" tabindex="-1">Comprovante</h1>
+    <p class="sub">Prévia do que o cliente recebe no WhatsApp.</p>
+    <article class="papel" aria-label="Comprovante da OS #${pad(o.n)}">
+      <header class="papel-topo">
+        <div class="logo-oficina" role="img" aria-label="Logo da oficina (exemplo)">${esc(iniciais(of.dono || of.nome) || 'OF')}</div>
+        <div><p class="papel-oficina">${esc(of.nome)}</p><p class="linha-sub">${esc(of.descricao || '')}${of.telefone ? ' · ' + esc(of.telefone) : ''}</p></div>
+      </header>
+      <dl class="papel-dados">
+        <div><dt>OS</dt><dd class="mono">#${pad(o.n)}</dd></div>
+        <div><dt>Data</dt><dd>${dataBR(o.data)}</dd></div>
+        <div><dt>Veículo</dt><dd>${esc(nomeCarro(k))}</dd></div>
+        <div><dt>Placa</dt><dd><span class="placa">${esc(o.placa)}</span></dd></div>
+        <div><dt>Cliente</dt><dd>${esc(donoDe(o.placa).nome)}</dd></div>
+        <div><dt>Entrega</dt><dd>${o.entrega ? `${diaMes(o.entrega.dia)}, ${esc(o.entrega.hora)}` : '—'}</dd></div>
+      </dl>
+      <table class="papel-itens">
+        <thead><tr><th scope="col">Item</th><th scope="col">Valor</th></tr></thead>
+        <tbody>${o.itens.map(i => `<tr><td>${i.qtd > 1 ? i.qtd + '× ' : ''}${esc(i.nome)}<span>${i.tipo === 'peca' ? 'Peça' : 'Mão de obra'}</span></td><td>${brl(linhaTotal(i))}</td></tr>`).join('')}</tbody>
+      </table>
+      <div class="papel-total"><span class="rotulo">Total</span><strong>${brl(total(o))}</strong></div>
+      <div class="pilulas" style="margin-top:10px">${pilula(stExec(o))}${pilula(stPag(o))}</div>
+      <footer class="selo">${logo()}<span>Gerado via Camber — Histórico Protegido</span></footer>
+    </article>`,
+    `<button type="button" class="btn btn-prim" data-acao="compartilhar" data-key="compartilhar">${ic('share')}Compartilhar</button>`);
+}
+
+/* --- Caixa */
+function telaCaixa() {
+  const mes = S.mov.filter(m => m.data.slice(0, 7) === hoje().slice(0, 7));
+  const ent = soma(mes.filter(m => m.tipo === 'e')), sai = soma(mes.filter(m => m.tipo === 's')), saldo = ent - sai;
+  const pct = ent ? Math.round(sai / ent * 100) : 0;
+  const pend = S.os.filter(o => o.pag === 'pendente'), prontas = pend.filter(o => o.exec === 'finalizado'), andamento = pend.filter(o => o.exec === 'pendente');
+  const semNota = S.estoque.filter(i => !i.nf), vencidas = S.contas.filter(c => !c.paga && c.dia < hoje()), pixPend = S.pix.filter(x => !x.ok);
+  const nPend = semNota.length + vencidas.length + pixPend.length;
+
+  const linhaPix = x => {
+    const o = x.os && osPor(x.os);
+    let corpo;
+    if (x.ok) corpo = `<p class="estado">${ic('check_circle')}Conferido${o ? ` · OS #${pad(o.n)}` : ' · outra entrada'}</p>`;
+    else if (o) corpo = `<p class="estado">${ic('help')}É da OS #${pad(o.n)} (${esc(carroPor(o.placa)?.modelo || o.placa)})?</p>
+      <button type="button" class="btn btn-prim btn-mini btn-bloco" data-acao="pix" data-id="${x.id}" data-key="pix-${x.id}-btn">${ic('check')}Confirmar</button>`;
+    else if (ui.vincular === x.id) {
+      const cand = S.os.filter(y => y.pag === 'pendente' && !S.pix.some(z => !z.ok && z.os === y.n));
+      corpo = `<p class="estado">${ic('link')}Qual OS esse Pix pagou?</p><div class="escolha">${cand.map(y =>
+        `<button type="button" class="btn btn-sec btn-mini btn-bloco" data-acao="ligar" data-id="${x.id}" data-os="${y.n}">OS #${pad(y.n)} · ${esc(carroPor(y.placa)?.modelo || y.placa)} · ${brl(total(y))}</button>`).join('')}
+        <button type="button" class="btn btn-sec btn-mini btn-bloco" data-acao="sem-os" data-id="${x.id}">Não é de serviço</button></div>`;
+    } else corpo = `<p class="estado">${ic('link_off')}Sem OS ligada</p>
+      <button type="button" class="btn btn-sec btn-mini btn-bloco" data-acao="vincular" data-id="${x.id}" data-key="pix-${x.id}-btn">${ic('link')}Ligar a uma OS</button>`;
+    return `<li class="card linha s${x.ok ? 0 : 1}${ui.flash === 'pix-' + x.id ? ' flash' : ''}" data-key="pix-${x.id}" tabindex="-1">
+      <div class="linha-topo"><span class="nome">${esc(x.nome)}</span><span class="valor">${brl(x.valor)}</span></div>
+      <p class="linha-sub">Pix · ${esc(x.hora)}</p>${corpo}</li>`;
+  };
+  const linhaConta = c => {
+    const venc = !c.paga && c.dia < hoje();
+    const q = c.paga ? 'Paga' : venc ? (c.dia === diaISO(-1) ? 'Venceu ontem' : `Venceu em ${diaMes(c.dia)}`) : c.dia === hoje() ? 'Vence hoje' : c.dia === diaISO(1) ? 'Vence amanhã' : `Vence em ${diaMes(c.dia)}`;
+    return `<li class="card linha${c.paga ? ' s0' : venc ? ' s2' : ''}${ui.flash === 'conta-' + c.id ? ' flash' : ''}" data-key="conta-${c.id}" tabindex="-1">
+      <div class="linha-topo"><span class="nome">${esc(c.nome)}</span><span class="valor">${brl(c.valor)}</span></div>
+      <p class="linha-sub">${esc(c.det)}</p>
+      <div class="linha-rodape"><span class="estado">${ic(c.paga ? 'check_circle' : venc ? 'warning' : 'event')}${q}</span>
+      ${c.paga ? '' : `<button type="button" class="btn btn-sec btn-mini" data-acao="pagar" data-id="${c.id}" data-key="conta-${c.id}-btn">Paguei</button>`}</div></li>`;
+  };
+  const recentes = S.mov.map((m, i) => [m, i]).sort((a, b) => b[0].data.localeCompare(a[0].data) || b[1] - a[1]).slice(0, 8).map(x => x[0]);
+
+  return tela(`
+    <h1 class="titulo" tabindex="-1">Caixa</h1>
+    <p class="sub">O dinheiro da oficina em ${MES}, sem planilha.</p>
+    <section class="card" style="margin-top:16px" aria-labelledby="t-saldo">
+      <p class="rotulo" id="t-saldo">Saldo do mês</p>
+      <p class="saldo-valor">${brl(saldo)}</p>
+      <div class="barra"><span>Entrou</span><span class="trilho" aria-hidden="true"><span style="width:100%"></span></span><span class="valor">${brl(ent)}</span></div>
+      <div class="barra saida"><span>Saiu</span><span class="trilho" aria-hidden="true"><span style="width:${Math.min(100, pct)}%"></span></span><span class="valor">${brl(sai)}</span></div>
+      <p class="saude">${ic(saldo >= 0 ? 'trending_up' : 'trending_down')}<span>${saldo >= 0 ? `Sobrou dinheiro este mês. As saídas foram ${pct}% das entradas.` : `Este mês saiu ${brl(-saldo)} a mais do que entrou.`}</span></p>
+    </section>
+    <a class="card item-lista" style="margin-top:8px" href="#/os">
+      <div class="corpo"><p class="rotulo">A receber</p><p class="kpi-valor">${brl(soma(pend, total))}</p>
+      <p class="linha-sub">Prontos: ${brl(soma(prontas, total))} (${prontas.length}) · Em andamento: ${brl(soma(andamento, total))} (${andamento.length})</p></div>${ic('chevron_right')}</a>
+
+    <h2 class="secao" id="t-pix" tabindex="-1">Pix de hoje</h2>
+    <p class="dica" style="margin:-4px 0 10px">Confira cada Pix com a OS. Assim o que entra no banco bate com o serviço feito.</p>
+    <ul class="lista">${S.pix.map(linhaPix).join('')}</ul>
+
+    <h2 class="secao" id="t-contas" tabindex="-1">Contas a pagar</h2>
+    <ul class="lista">${S.contas.map(linhaConta).join('')}</ul>
+
+    <h2 class="secao">Movimentações</h2>
+    <ul class="lista-card">${recentes.map(m => `<li class="mov"><span class="mov-ic${m.tipo === 'e' ? ' s0' : ''}">${ic(m.tipo === 'e' ? 'call_received' : 'call_made')}</span>
+      <div class="corpo"><p style="font-weight:600;line-height:1.3">${esc(m.desc)}</p><p class="linha-sub">${quando(m.data)} · ${FORMAS[m.forma] || ''}${m.tipo === 's' && !m.nf ? ' · sem nota' : ''}</p></div>
+      <p class="valor"><span class="sr">${m.tipo === 'e' ? 'entrada' : 'saída'} </span>${m.tipo === 'e' ? '+' : '−'} ${brl(m.valor)}</p></li>`).join('')}</ul>
+
+    <section class="card leao" aria-labelledby="t-leao">
+      <h2 id="t-leao" tabindex="-1">${ic('receipt_long')}Pronto para o Leão</h2>
+      <p>${nPend ? `Falta pouco: ${plural(nPend, 'pendência', 'pendências')} antes de fechar ${MES}.` : 'Tudo pronto e organizado para o Leão e o Imposto de Renda.'}</p>
+      <dl class="leao-nums">
+        <div><dt>Receitas de ${MES}</dt><dd>${brl(ent)}</dd></div>
+        <div><dt>Despesas de ${MES}</dt><dd>${brl(sai)}</dd></div>
+        <div><dt>Despesas com nota</dt><dd>${brl(soma(mes.filter(m => m.tipo === 's' && m.nf)))}</dd></div>
+        <div class="${semNota.length || vencidas.length ? 's2' : nPend ? 's1' : 's0'}"><dt>Pendências</dt><dd><span class="dot"></span>${nPend}</dd></div>
+      </dl>
+      <button type="button" class="btn btn-sec" data-acao="resumo" data-key="resumo">${ic('download')}Baixar resumo do mês</button>
+    </section>`,
+    `<a class="btn btn-prim" href="#/form/saida">${ic('remove')}Lançar saída</a>`);
+}
+
+/* --- Cadastros */
+const ABAS_CAD = { clientes: ['Clientes', 'cliente', 'Novo cliente', 'Buscar nome ou telefone'], carros: ['Carros', 'carro', 'Novo carro', 'Buscar placa, modelo ou dono'], estoque: ['Estoque', 'peca', 'Nova peça', 'Buscar peça'], servicos: ['Serviços', 'servico', 'Novo serviço', 'Buscar serviço'] };
+
+function listaCad(aba) {
+  const q = norm(ui.busca[aba]);
+  const tem = (...campos) => !q || campos.some(c => norm(c).includes(q));
+  let itens = [];
+  if (aba === 'clientes') itens = S.clientes.filter(c => tem(c.nome, c.telefone)).map(c => {
+    const n = S.carros.filter(k => k.cliente === c.id).length;
+    return `<li><a class="item-lista" href="#/cliente/${c.id}"><span class="avatar" aria-hidden="true">${esc(iniciais(c.nome))}</span><div class="corpo"><p class="nome">${esc(c.nome)}</p><p class="linha-sub">${esc(c.telefone || 'Sem telefone')} · ${plural(n, 'carro', 'carros')}</p></div>${ic('chevron_right')}</a></li>`;
+  });
+  if (aba === 'carros') itens = S.carros.filter(k => tem(k.placa, k.modelo, donoDe(k.placa).nome)).map(k =>
+    `<li><a class="item-lista" href="#/carro/${k.placa}"><span class="placa">${esc(k.placa)}</span><div class="corpo"><p class="nome">${esc(nomeCarro(k))}</p><p class="linha-sub">${esc(donoDe(k.placa).nome)}</p></div>${ic('chevron_right')}</a></li>`);
+  if (aba === 'estoque') itens = S.estoque.filter(i => tem(i.nome)).map(i =>
+    `<li><a class="item-lista" href="#/form/peca/${i.id}"><div class="corpo"><p class="nome">${esc(i.nome)}</p><p class="linha-sub">${i.qtd} ${esc(unid(i.qtd, i.un))} · ${brl(i.preco)} cada</p>
+      ${i.qtd < i.min || !i.nf ? `<div class="pilulas" style="margin-top:6px">${i.qtd < i.min ? `<span class="pilula s1">${ic('inventory_2')}Estoque baixo</span>` : ''}${!i.nf ? `<span class="pilula s2">${ic('receipt_long')}Sem nota</span>` : ''}</div>` : ''}</div>${ic('chevron_right')}</a></li>`);
+  if (aba === 'servicos') itens = S.servicos.filter(s => tem(s.nome)).map(s =>
+    `<li><a class="item-lista" href="#/form/servico/${s.id}"><div class="corpo"><p class="nome">${esc(s.nome)}</p><p class="linha-sub">${esc(s.tempo || 'Sem tempo estimado')}</p></div><span class="valor">${brl(s.preco)}</span>${ic('chevron_right')}</a></li>`);
+  return itens.join('') || `<li class="item-lista vazio">Nada encontrado${q ? ` para “${esc(ui.busca[aba])}”` : ''}.</li>`;
+}
+
+function telaCadastros(aba) {
+  if (!ABAS_CAD[aba]) aba = 'clientes';
+  const [, tipo, novo, dica] = ABAS_CAD[aba];
+  return tela(`
+    <h1 class="titulo" tabindex="-1">Cadastros</h1>
+    <p class="sub">Clientes, carros, peças e a tabela de preços.</p>
+    <nav class="seg cad-abas" aria-label="Tipo de cadastro">${Object.entries(ABAS_CAD).map(([k, [t]]) => `<a href="#/cadastros/${k}"${k === aba ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+    <label class="busca">${ic('search')}<span class="sr">${dica}</span><input type="search" id="busca-cad" data-aba="${aba}" data-key="busca-${aba}" value="${esc(ui.busca[aba] || '')}" placeholder="${dica}" autocomplete="off" enterkeyhint="search"></label>
+    <ul class="lista-card" id="lista-cad" style="margin-top:12px">${listaCad(aba)}</ul>`,
+    `<a class="btn btn-prim" href="#/form/${tipo}">${ic('add')}${novo}</a>`);
+}
+
+function telaCliente(id) {
+  const c = clientePor(id);
+  if (!c) return naoAchou('#/cadastros/clientes', 'Clientes');
+  const carros = S.carros.filter(k => k.cliente === id);
+  const oss = S.os.filter(o => carros.some(k => k.placa === o.placa)).sort((a, b) => b.n - a.n);
+  return tela(`
+    ${volta('#/cadastros/clientes', 'Clientes')}
+    <div class="ficha-topo"><div><h1 class="titulo" tabindex="-1">${esc(c.nome)}</h1><p class="sub">${esc(c.telefone || 'Sem telefone')}</p></div><span class="avatar" aria-hidden="true" style="width:56px;height:56px;font-size:20px">${esc(iniciais(c.nome))}</span></div>
+    ${c.obs ? `<p class="dica">${esc(c.obs)}</p>` : ''}
+    <div class="contato">
+      <button type="button" class="btn btn-sec btn-mini" data-acao="whatsapp" data-id="${c.id}">${ic('chat')}WhatsApp</button>
+      <a class="btn btn-sec btn-mini" href="#/form/cliente/${c.id}">${ic('edit')}Editar</a>
+    </div>
+    <h2 class="secao">Carros <button type="button" class="btn btn-sec btn-mini" data-acao="novo-carro" data-id="${c.id}">${ic('add')}Carro</button></h2>
+    <ul class="lista-card">${carros.length ? carros.map(k => `<li><a class="item-lista" href="#/carro/${k.placa}"><span class="placa">${esc(k.placa)}</span><div class="corpo"><p class="nome">${esc(nomeCarro(k))}</p><p class="linha-sub">${esc(k.cor || '')}${k.km ? ` · ${Number(k.km).toLocaleString('pt-BR')} km` : ''}</p></div>${ic('chevron_right')}</a></li>`).join('')
+      : '<li class="item-lista vazio">Nenhum carro cadastrado.</li>'}</ul>
+    <h2 class="secao">Ordens de serviço</h2>
+    <ul class="lista-card">${oss.length ? oss.map(o => `<li><a class="item-lista" href="#/os/${o.n}"><div class="corpo"><p class="nome"><span class="mono">OS #${pad(o.n)}</span> · ${brl(total(o))}</p><div class="pilulas" style="margin-top:4px">${pilula(stExec(o))}${pilula(stPag(o))}</div></div>${ic('chevron_right')}</a></li>`).join('')
+      : '<li class="item-lista vazio">Nenhuma OS no app ainda.</li>'}</ul>`);
+}
+
+function telaCarro(placa) {
+  const k = carroPor(placa);
+  if (!k) return naoAchou('#/cadastros/carros', 'Carros');
+  const dono = clientePor(k.cliente), v = prontuario(placa);
+  return tela(`
+    ${volta('#/cadastros/carros', 'Carros')}
+    <div class="ficha-topo"><div><h1 class="titulo" tabindex="-1">${esc(nomeCarro(k))}</h1>
+      <p class="sub">${dono ? `<a href="#/cliente/${dono.id}">${esc(dono.nome)}</a>` : 'Sem dono cadastrado'}</p></div><span class="placa">${esc(k.placa)}</span></div>
+    <dl class="card specs">
+      <div><dt>Ano</dt><dd>${esc(k.ano || '—')}</dd></div>
+      <div><dt>Cor</dt><dd>${esc(k.cor || '—')}</dd></div>
+      <div><dt>Motor</dt><dd>${esc(k.motor || '—')}</dd></div>
+      <div><dt>Combustível</dt><dd>${esc(k.combustivel || '—')}</dd></div>
+      <div><dt>Quilometragem</dt><dd class="mono">${k.km ? Number(k.km).toLocaleString('pt-BR') + ' km' : '—'}</dd></div>
+      <div><dt>Visitas</dt><dd>${v.length}</dd></div>
+      ${k.obs ? `<div class="larga"><dt>Especificações</dt><dd>${esc(k.obs)}</dd></div>` : ''}
+    </dl>
+    <h2 class="secao">Prontuário</h2>
+    <div class="card"><ol class="tempo" aria-label="Serviços, do mais novo ao mais antigo">${v.length ? v.map(x => `<li>
+        <p class="lt-data">${dataBR(x.data)} · OS #${pad(x.n)}${x.km ? ` · ${x.km.toLocaleString('pt-BR')} km` : ''}</p>
+        <p class="lt-servico">${x.app ? `<a href="#/os/${x.n}">${esc(x.servico)}</a>` : esc(x.servico)}</p>
+        ${x.pecas ? `<p class="linha-sub">Peças: ${esc(x.pecas)}</p>` : ''}
+        <p class="valor" style="font-weight:600">${brl(x.valor)}${x.aberta ? ' · <span class="pilula s1">Em aberto</span>' : ''}</p></li>`).join('')
+      : '<li class="vazio">Nenhum serviço ainda.</li>'}</ol></div>`,
+    `<a class="btn btn-sec btn-quadrado" href="#/form/carro/${k.placa}" aria-label="Editar carro">${ic('edit')}</a><button type="button" class="btn btn-prim" data-acao="os-carro" data-placa="${k.placa}">${ic('add')}Nova OS</button>`);
+}
+
+/* --- Formulários de cadastro (um só gerador para todos) */
+const semanaOps = () => [0, 1, 2, 3, 4, 5].map(i => { const d = diaISO(i); return [d, `${i === 0 ? 'Hoje' : i === 1 ? 'Amanhã' : semana(d, 'long')}, ${diaMes(d)}`]; });
+const FORMS = {
+  cliente: { lista: () => S.clientes, chave: 'id', novo: 'Novo cliente', editar: 'Editar cliente', salvo: 'Cliente salvo', voltar: id => id ? `#/cliente/${id}` : '#/cadastros/clientes',
+    campos: () => [{ k: 'nome', rot: 'Nome', obrig: true, auto: 'name' }, { k: 'telefone', rot: 'Telefone (WhatsApp)', tipo: 'tel', auto: 'tel' }, { k: 'obs', rot: 'Observação', tipo: 'area' }] },
+  carro: { lista: () => S.carros, chave: 'placa', novo: 'Novo carro', editar: 'Editar carro', salvo: 'Carro salvo', voltar: id => id ? `#/carro/${id}` : '#/cadastros/carros', padrao: () => ({ combustivel: 'Flex' }),
+    campos: id => [
+      { k: 'placa', rot: 'Placa', tipo: 'placa', obrig: true, fixo: !!id, dica: 'ABC-1D23' },
+      { k: 'modelo', rot: 'Modelo', obrig: true, dica: 'Ex.: Gol 1.6' },
+      { k: 'cliente', rot: 'Dono', tipo: 'sel', obrig: true, vazio: true, ops: S.clientes.map(c => [c.id, c.nome]) },
+      { k: 'ano', rot: 'Ano', tipo: 'num' }, { k: 'cor', rot: 'Cor' },
+      { k: 'motor', rot: 'Motor', dica: 'Ex.: 1.6 8V' },
+      { k: 'combustivel', rot: 'Combustível', tipo: 'sel', ops: ['Flex', 'Gasolina', 'Etanol', 'Diesel', 'GNV'].map(c => [c, c]) },
+      { k: 'km', rot: 'Quilometragem', tipo: 'num' },
+      { k: 'obs', rot: 'Especificações e observações', tipo: 'area', dica: 'Óleo, pneus, peças que costuma usar' }] },
+  peca: { lista: () => S.estoque, chave: 'id', novo: 'Nova peça', editar: 'Editar peça', salvo: 'Peça salva', voltar: () => '#/cadastros/estoque', padrao: () => ({ un: 'un.', nf: true }),
+    campos: () => [
+      { k: 'nome', rot: 'Nome da peça', obrig: true },
+      { k: 'qtd', rot: 'Quantidade em estoque', tipo: 'num', obrig: true },
+      { k: 'un', rot: 'Unidade', tipo: 'sel', ops: ['un.', 'L', 'jogo', 'kit', 'par'].map(u => [u, u]) },
+      { k: 'min', rot: 'Avisar quando tiver menos de', tipo: 'num' },
+      { k: 'custo', rot: 'Custo (quanto você pagou)', tipo: 'dinheiro' },
+      { k: 'preco', rot: 'Preço de venda', tipo: 'dinheiro', obrig: true },
+      { k: 'nf', rot: 'Comprei com nota fiscal', tipo: 'check' }] },
+  servico: { lista: () => S.servicos, chave: 'id', novo: 'Novo serviço', editar: 'Editar serviço', salvo: 'Serviço salvo', voltar: () => '#/cadastros/servicos',
+    campos: () => [{ k: 'nome', rot: 'Nome do serviço', obrig: true }, { k: 'preco', rot: 'Preço padrão (mão de obra)', tipo: 'dinheiro', obrig: true }, { k: 'tempo', rot: 'Tempo estimado', dica: 'Ex.: 1 h' }] },
+  agenda: { lista: () => S.agenda, chave: 'id', novo: 'Agendar horário', editar: 'Editar horário', salvo: 'Horário agendado', voltar: () => '#/agenda', padrao: () => ({ dia: ui.dia || hoje() }), extra: { os: null },
+    campos: () => [
+      { k: 'dia', rot: 'Dia', tipo: 'sel', obrig: true, ops: semanaOps() },
+      { k: 'hora', rot: 'Horário', tipo: 'hora', obrig: true },
+      { k: 'placa', rot: 'Carro', tipo: 'sel', obrig: true, vazio: true, ops: S.carros.map(k => [k.placa, `${k.placa} · ${k.modelo} · ${donoDe(k.placa).nome}`]) },
+      { k: 'servico', rot: 'O que vai fazer', obrig: true, lista: 'lista-servicos', dica: 'Ex.: Troca de óleo' },
+      { k: 'obs', rot: 'Observação', tipo: 'area' }] },
+  saida: { lista: () => S.mov, chave: 'id', novo: 'Lançar saída', editar: 'Editar saída', salvo: 'Saída lançada', voltar: () => '#/caixa', padrao: () => ({ cat: 'pecas', forma: 'pix', nf: true }), extra: { tipo: 's' },
+    campos: () => [
+      { k: 'desc', rot: 'Descrição', obrig: true, dica: 'Ex.: Auto Peças Centro' },
+      { k: 'valor', rot: 'Valor', tipo: 'dinheiro', obrig: true },
+      { k: 'cat', rot: 'Tipo de gasto', tipo: 'sel', ops: Object.entries(CATS) },
+      { k: 'forma', rot: 'Como pagou', tipo: 'sel', ops: Object.entries(FORMAS) },
+      { k: 'nf', rot: 'Tem nota fiscal', tipo: 'check' }] },
+  oficina: { unico: true, editar: 'Dados da oficina', salvo: 'Dados da oficina salvos', voltar: () => '#/ajustes',
+    campos: () => [{ k: 'nome', rot: 'Nome da oficina', obrig: true }, { k: 'dono', rot: 'Seu nome ou apelido' }, { k: 'descricao', rot: 'O que aparece embaixo do nome', dica: 'Ex.: Mecânica e alinhamento' }, { k: 'telefone', rot: 'Telefone (WhatsApp)', tipo: 'tel' }] },
+};
+
+function campo(c, v) {
+  const id = 'f-' + c.k, val = v[c.k] ?? '', req = c.obrig ? ' required aria-required="true"' : '';
+  if (c.tipo === 'check') return `<label class="check"><input type="checkbox" name="${c.k}" id="${id}"${val ? ' checked' : ''}><span>${c.rot}</span></label>`;
+  let inp;
+  if (c.tipo === 'sel') inp = `<select class="entrada" name="${c.k}" id="${id}"${req} aria-describedby="${id}-erro">${c.vazio ? '<option value="">Escolha…</option>' : ''}${c.ops.map(([k, t]) => `<option value="${esc(k)}"${String(k) === String(val) ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
+  else if (c.tipo === 'area') inp = `<textarea class="entrada" name="${c.k}" id="${id}" rows="3"${c.dica ? ` placeholder="${esc(c.dica)}"` : ''}>${esc(val)}</textarea>`;
+  else {
+    const type = { tel: 'tel', hora: 'time' }[c.tipo] || 'text', modo = { num: 'numeric', dinheiro: 'decimal' }[c.tipo];
+    const mostra = c.tipo === 'dinheiro' && val !== '' ? numCampo(val) : val;
+    inp = `<input class="entrada${c.tipo === 'placa' ? ' mono' : ''}" type="${type}" name="${c.k}" id="${id}" value="${esc(mostra)}"${modo ? ` inputmode="${modo}"` : ''}${req}${c.fixo ? ' readonly' : ''}${c.dica ? ` placeholder="${esc(c.dica)}"` : ''}${c.lista ? ` list="${c.lista}"` : ''}${c.tipo === 'placa' ? ' data-placa maxlength="8" autocapitalize="characters"' : ''}${c.tipo === 'dinheiro' ? ' data-dinheiro' : ''} autocomplete="${c.auto || 'off'}" aria-describedby="${id}-erro">`;
+    if (c.tipo === 'dinheiro') inp = `<div class="com-prefixo"><span aria-hidden="true">R$</span>${inp}</div>`;
+  }
+  return `<div class="campo"><label for="${id}">${c.rot}${c.obrig ? '' : ' <span class="opc">(opcional)</span>'}</label>${inp}<p class="erro-campo" id="${id}-erro" hidden></p></div>`;
+}
+
+function telaForm(tipo, id) {
+  const F = FORMS[tipo];
+  if (!F) return naoAchou('#/cadastros', 'Cadastros');
+  const atual = F.unico ? S.oficina : id ? F.lista().find(x => String(x[F.chave]) === id) : null;
+  if (id && !atual) return naoAchou(F.voltar(), 'Voltar');
+  const v = atual || { ...(F.padrao ? F.padrao() : {}), ...(ui.prefill || {}) };
+  return tela(`
+    ${volta(F.voltar(id), 'Voltar')}
+    <h1 class="titulo" tabindex="-1">${atual ? F.editar : F.novo}</h1>
+    <form id="form" data-tipo="${tipo}" data-id="${esc(id || '')}" novalidate>${F.campos(id).map(c => campo(c, v)).join('')}</form>
+    ${tipo === 'agenda' ? `<datalist id="lista-servicos">${S.servicos.map(s => `<option value="${esc(s.nome)}"></option>`).join('')}</datalist>` : ''}
+    ${tipo === 'carro' ? '<p class="dica">O dono não está na lista? <a href="#/form/cliente">Cadastre o cliente primeiro</a>.</p>' : ''}`,
+    `<a class="btn btn-sec" href="${F.voltar(id)}">Cancelar</a><button type="submit" form="form" class="btn btn-prim">${ic('check')}Salvar</button>`);
+}
+
+/* --- Configurações */
+function telaAjustes() {
+  const of = S.oficina;
+  const opcao = (v, icone, t, sub) => `<label class="opcao"><input type="radio" name="tema" value="${v}"${tema === v ? ' checked' : ''}>${ic(icone)}<span><b>${t}</b><small>${sub}</small></span></label>`;
+  return tela(`
+    <h1 class="titulo" tabindex="-1">Configurações</h1>
+    <fieldset style="margin-top:20px"><legend class="secao" style="margin:0 0 4px">Aparência</legend>
+      ${opcao('claro', 'light_mode', 'Claro', 'Padrão. Melhor sob sol e luz forte.')}
+      ${opcao('escuro', 'dark_mode', 'Escuro', 'Descansa a vista com pouca luz.')}
+      ${opcao('sistema', 'contrast', 'Padrão do sistema', 'Segue o tema do celular.')}
+    </fieldset>
+    <h2 class="secao">Oficina</h2>
+    <a class="card item-lista" href="#/form/oficina"><span class="avatar" aria-hidden="true">${esc(iniciais(of.dono || of.nome))}</span>
+      <div class="corpo"><p class="nome">${esc(of.nome)}</p><p class="linha-sub">${esc(of.descricao || '')}${of.telefone ? ' · ' + esc(of.telefone) : ''}</p></div>${ic('edit')}</a>
+    <h2 class="secao">Demonstração</h2>
+    <p class="dica" style="margin:-4px 0 10px">Troque o dia simulado para mostrar o app ao vivo. Isso apaga o que foi feito na demo.</p>
+    <div class="lista">
+      <button type="button" class="btn btn-sec" data-acao="cenario" data-c="0">${ic('check_circle')}Tudo em dia</button>
+      <button type="button" class="btn btn-sec" data-acao="cenario" data-c="1">${ic('today')}Dia comum (início da demo)</button>
+      <button type="button" class="btn btn-sec" data-acao="cenario" data-c="2">${ic('warning')}Dia cheio de pendências</button>
+    </div>
+    <p class="dica" style="margin-top:24px">Camber · mockup do MVP · dados fictícios. Nada é enviado ao banco, à Receita ou ao WhatsApp.</p>`);
+}
+
+/* =====================================================================
+   9. ROTEADOR (hash: o GitHub Pages não reescreve rotas)
+   ===================================================================== */
+const TELAS = { inicio: telaInicio, agenda: telaAgenda, os: telaOS, comprovante: telaComprovante, caixa: telaCaixa, cadastros: telaCadastros, cliente: telaCliente, carro: telaCarro, form: telaForm, ajustes: telaAjustes };
+const ABA = { inicio: 'inicio', agenda: 'agenda', os: 'os', comprovante: 'os', caixa: 'caixa', cadastros: 'cadastros', cliente: 'cadastros', carro: 'cadastros' };
+const ABA_FORM = { agenda: 'agenda', saida: 'caixa', oficina: null };
+let rota = { r: null }, primeira = true;
+
+function lerRota() {
+  const [r, a, b] = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  return TELAS[r] ? { r, a, b } : { r: 'inicio' };
+}
+
+function render() {
+  $('#tela').innerHTML = TELAS[rota.r](rota.a, rota.b);
+  $('#topo-nome').textContent = S.oficina.nome;
+  const aba = rota.r === 'form' ? (rota.a in ABA_FORM ? ABA_FORM[rota.a] : 'cadastros') : ABA[rota.r];
+  $$('.abas a').forEach(a => a.dataset.aba === aba ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  rota.r === 'ajustes' ? $('#engrenagem').setAttribute('aria-current', 'page') : $('#engrenagem').removeAttribute('aria-current');
+  if (rota.r === 'os' && rota.a === 'nova' && S.rascunho.passo === 1) { ultimoAchado = null; achado(); }
+  ui.flash = null;
+}
+
+function mostrar() {
+  const nova = lerRota(), mudou = [nova.r, nova.a, nova.b].join('/') !== [rota.r, rota.a, rota.b].join('/');
+  if (mudou) { ui.receber = null; ui.vincular = null; }
+  rota = nova;
+  render();
+  ui.prefill = null;
+  if (!mudou) return;
+  $('#tela').scrollTop = 0;
+  const alvo = ui.alvo && document.getElementById(ui.alvo);
+  ui.alvo = null;
+  if (alvo) { alvo.scrollIntoView({ block: 'start' }); alvo.focus({ preventScroll: true }); }
+  else if (!primeira) { const h = $('#tela h1'); if (h) h.focus({ preventScroll: true }); }
+  primeira = false;
+}
+
+/* Depois de mudar o estado: salva, redesenha e devolve o foco ao mesmo controle (ou à linha dele). */
+function atualizar() {
+  salvar();
+  const k = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.key : null;
+  render();
+  if (k) { const el = $(`[data-key="${k}"]`) || $(`[data-key="${k.replace(/-btn$/, '')}"]`) || $('#t-pend') || $('#tela h1'); if (el) el.focus({ preventScroll: true }); }
+}
+const ir = hash => { if (location.hash === hash) mostrar(); else location.hash = hash; };
+
+let tToast;
+function toast(msg) {
+  const t = $('#toast');
+  t.innerHTML = `${ic('check_circle')}<span>${esc(msg)}</span>`;
+  t.classList.add('on');
+  clearTimeout(tToast);
+  tToast = setTimeout(() => t.classList.remove('on'), 2800);
+}
+
+/* Tema: claro por padrão; a escolha fica neste navegador e não volta com a troca de cenário. */
+let tema = document.documentElement.dataset.tema;
+const escuroDoSistema = matchMedia('(prefers-color-scheme: dark)');
+function aplicarTema(t) {
+  tema = ['claro', 'escuro', 'sistema'].includes(t) ? t : 'claro';
+  document.documentElement.dataset.tema = tema;
+  const escuro = tema === 'escuro' || (tema === 'sistema' && escuroDoSistema.matches);
+  $('meta[name="theme-color"]').setAttribute('content', escuro ? '#111827' : '#FFFFFF');
+}
+if (escuroDoSistema.addEventListener) escuroDoSistema.addEventListener('change', () => aplicarTema(tema));
+
+/* =====================================================================
+   10. AÇÕES (tudo simulado)
+   ===================================================================== */
+const addItem = (tipo, id) => {
+  const x = (tipo === 'servico' ? S.servicos : S.estoque).find(y => y.id === id);
+  if (x && !S.rascunho.itens.some(i => i.ref === id)) S.rascunho.itens.push(tipo === 'servico' ? serv(id, x.nome, x.preco) : peca(id, x.nome, 1, x.preco));
+};
+
+const ACOES = {
+  'nova-os'() { if (S.rascunho.passo > 1 && !S.rascunho.itens.length && !S.rascunho.agenda) { S.rascunho = rascunhoVazio(); salvar(); } },
+  cenario(d) { cenario(+d.c); salvar(); toast(['Cenário: tudo em dia', 'Cenário: dia comum', 'Cenário: dia cheio de pendências'][+d.c]); ir('#/inicio'); },
+  'usar-placa'(d) { S.rascunho.placa = d.placa; atualizar(); },
+  passo(d) { S.rascunho.passo = +d.p; atualizar(); $('#tela').scrollTop = 0; $('#tela h1').focus({ preventScroll: true }); },
+  item(d) {
+    const r = S.rascunho, i = r.itens.findIndex(x => x.ref === d.id);
+    if (i >= 0) r.itens.splice(i, 1); else addItem(d.tipo, d.id);
+    atualizar();
+  },
+  tirar(d) { S.rascunho.itens = S.rascunho.itens.filter(i => i.ref !== d.id); atualizar(); },
+  qtd(d) { const it = S.rascunho.itens.find(i => i.ref === d.id); if (it) it.qtd = Math.max(1, it.qtd + +d.d); atualizar(); },
+  entrega(d) { S.rascunho.entrega = d.v; atualizar(); },
+  enviar() {
+    const r = S.rascunho;
+    if (!placaValida(r.placa) || !r.itens.length) return;
+    if (!carroPor(r.placa)) {
+      const cl = { id: novoId('cl'), nome: r.novo.cliente.trim() || 'Cliente novo', telefone: '', obs: '' };
+      S.clientes.push(cl);
+      S.carros.push({ placa: r.placa, modelo: r.novo.modelo.trim() || 'Carro novo', ano: '', cor: '', motor: '', combustivel: 'Flex', km: '', cliente: cl.id, obs: '' });
+    }
+    const n = Math.max(480, ...S.os.map(o => o.n)) + 1;
+    const ent = (ENTREGAS.find(e => e[0] === r.entrega) || ENTREGAS[0])[2]();
+    S.os.push({ n, placa: r.placa, data: hoje(), entrega: ent, exec: 'pendente', pag: 'pendente', forma: '', itens: r.itens.map(({ tipo, ref, nome, qtd, valor }) => ({ tipo, ref, nome, qtd, valor })) });
+    r.itens.filter(i => i.tipo === 'peca').forEach(i => { const e = S.estoque.find(x => x.id === i.ref); if (e) e.qtd = Math.max(0, e.qtd - i.qtd); });
+    const ag = S.agenda.find(a => a.id === r.agenda) || S.agenda.find(a => a.dia === hoje() && a.placa === r.placa && !a.os);
+    if (ag) ag.os = n;
+    S.rascunho = rascunhoVazio();
+    salvar();
+    ir(`#/comprovante/${n}`);
+  },
+  abrir(d) { const a = S.agenda.find(x => x.id === d.id); if (!a) return; S.rascunho = { ...rascunhoVazio(), placa: a.placa, passo: 2, agenda: a.id }; salvar(); ir('#/os/nova'); },
+  'os-carro'(d) { S.rascunho = { ...rascunhoVazio(), placa: d.placa, passo: 2 }; salvar(); ir('#/os/nova'); },
+  compartilhar() { toast('Enviado no WhatsApp'); },
+  finalizar(d) { const o = osPor(+d.os); if (!o) return; o.exec = 'finalizado'; atualizar(); toast('Serviço finalizado. Avise o cliente que o carro está pronto.'); },
+  receber(d) { ui.receber = +d.os; atualizar(); const b = $('[data-f="pix"]'); if (b) b.focus(); },
+  'cancelar-receber'() { ui.receber = null; atualizar(); },
+  forma(d) { const o = osPor(+d.os); if (!o) return; receber(o.n, d.f); ui.receber = null; atualizar(); toast(`Recebido: ${brl(total(o))} em ${FORMAS[d.f]}. Já está no caixa.`); },
+  pix(d) { const x = S.pix.find(p => p.id === d.id); if (!x) return; confirmarPix(x.id); ui.flash = 'pix-' + x.id; atualizar(); toast(`Pix de ${brl(x.valor)} conferido${x.os ? ` com a OS #${pad(x.os)}` : ''}`); },
+  vincular(d) { ui.vincular = d.id; atualizar(); },
+  ligar(d) { const x = S.pix.find(p => p.id === d.id); if (!x) return; x.os = +d.os; ui.vincular = null; ACOES.pix(d); },
+  'sem-os'(d) {
+    const x = S.pix.find(p => p.id === d.id); if (!x) return;
+    x.ok = true; ui.vincular = null; ui.flash = 'pix-' + x.id;
+    S.mov.push({ id: novoId('m'), tipo: 'e', data: hoje(), desc: `Pix de ${x.nome} (sem OS)`, valor: x.valor, forma: 'pix' });
+    atualizar(); toast('Registrado como outra entrada no caixa');
+  },
+  pagar(d) {
+    const c = S.contas.find(x => x.id === d.id); if (!c) return;
+    c.paga = true; ui.flash = 'conta-' + c.id;
+    S.mov.push({ id: novoId('m'), tipo: 's', data: hoje(), desc: c.nome, valor: c.valor, forma: 'boleto', cat: 'contas', nf: true });
+    atualizar(); toast(`Conta paga: ${c.nome}. Saída lançada no caixa.`);
+  },
+  nota(d) { const i = S.estoque.find(x => x.id === d.id); if (!i) return; i.nf = true; atualizar(); toast('Nota anexada. Uma pendência a menos.'); },
+  resumo() { toast(`Resumo de ${MES} pronto. No app de verdade, sai em PDF para o contador.`); },
+  whatsapp() { toast('Abriria a conversa no WhatsApp (demonstração)'); },
+  dia(d) { ui.dia = d.dia; atualizar(); },
+  filtro(d) { ui.filtroOS = d.f; atualizar(); },
+  'novo-carro'(d) { ui.prefill = { cliente: d.id }; ir('#/form/carro'); },
+};
+
+document.addEventListener('click', e => {
+  const link = e.target.closest('a[data-alvo]');
+  if (link) ui.alvo = link.dataset.alvo;
+  const b = e.target.closest('[data-acao]');
+  if (b && !b.disabled && ACOES[b.dataset.acao]) ACOES[b.dataset.acao](b.dataset);
+});
+
+document.addEventListener('input', e => {
+  const t = e.target, r = S.rascunho;
+  if (t.id === 'placa') { t.value = r.placa = fmtPlaca(t.value); salvar(); achado(); }
+  else if (t.id === 'novo-modelo' || t.id === 'novo-cliente') { r.novo[t.id === 'novo-modelo' ? 'modelo' : 'cliente'] = t.value; salvar(); }
+  else if (t.dataset.valor) {
+    const it = r.itens.find(x => x.ref === t.dataset.valor);
+    if (!it) return;
+    it.valor = lerValor(t.value); salvar();
+    $('#os-total').textContent = brl(soma(r.itens, linhaTotal));
+  }
+  else if (t.id === 'busca-cad') { ui.busca[t.dataset.aba] = t.value; $('#lista-cad').innerHTML = listaCad(t.dataset.aba); }
+  else if (t.hasAttribute('data-placa')) t.value = fmtPlaca(t.value);
+});
+
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'tema') { aplicarTema(t.value); try { localStorage.setItem('camber-tema', tema); } catch (err) { /* segue só nesta sessão */ } toast(`Tema ${{ claro: 'claro', escuro: 'escuro', sistema: 'do sistema' }[tema]} aplicado`); }
+  else if (t.dataset.add && t.value) { addItem(t.dataset.add, t.value); atualizar(); }
+  else if (t.dataset.valor) { const it = S.rascunho.itens.find(x => x.ref === t.dataset.valor); if (it) t.value = numCampo(it.valor); }
+  else if (t.hasAttribute('data-dinheiro') && t.value) t.value = numCampo(lerValor(t.value));
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id === 'placa' && placaValida(S.rascunho.placa)) ACOES.passo({ p: '2' });
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, tipo = f.dataset.tipo, id = f.dataset.id, F = FORMS[tipo];
+  if (!F) return;
+  const dados = {};
+  let primeiroErro = null;
+  for (const c of F.campos(id)) {
+    const el = f.elements[c.k];
+    let v = c.tipo === 'check' ? el.checked : el.value.trim();
+    if (c.tipo === 'num') v = v === '' ? '' : parseInt(v.replace(/\D/g, ''), 10) || 0;
+    if (c.tipo === 'dinheiro') v = v === '' ? '' : lerValor(v);
+    if (c.tipo === 'placa') v = fmtPlaca(v);
+    const msg = c.obrig && v === '' ? `Preencha: ${c.rot.toLowerCase()}.`
+      : c.tipo === 'placa' && !placaValida(v) ? 'Use o formato da placa: ABC-1D23.'
+      : c.tipo === 'placa' && !id && carroPor(v) ? 'Essa placa já está cadastrada.' : '';
+    const err = $(`#f-${c.k}-erro`);
+    if (err) { err.hidden = !msg; err.textContent = msg; }
+    if (c.tipo !== 'check') el.setAttribute('aria-invalid', String(!!msg));
+    if (msg && !primeiroErro) primeiroErro = el;
+    dados[c.k] = v;
+  }
+  if (primeiroErro) { primeiroErro.focus(); return; }
+  let chave = id;
+  if (F.unico) Object.assign(S.oficina, dados);
+  else if (id) Object.assign(F.lista().find(x => String(x[F.chave]) === id), dados);
+  else {
+    const novo = { ...(F.extra || {}), ...dados, ...(tipo === 'saida' ? { data: hoje() } : {}) };
+    if (F.chave === 'id') novo.id = novoId(tipo.slice(0, 2));
+    F.lista().push(novo);
+    chave = String(novo[F.chave]);
+  }
+  if (tipo === 'agenda') ui.dia = dados.dia;
+  salvar();
+  toast(F.salvo);
+  ir(F.voltar(chave));
+});
+
+/* =====================================================================
+   11. PARTIDA
+   ===================================================================== */
+$$('[data-logo]').forEach(el => { el.innerHTML = logo(); });
+aplicarTema(tema);
+addEventListener('hashchange', mostrar);
+mostrar();
+</script>
+</body>
+</html>
